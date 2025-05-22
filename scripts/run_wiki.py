@@ -13,6 +13,7 @@ import subprocess
 from pathlib import Path
 from dotenv import load_dotenv
 from urllib.parse import urlparse
+from typing import Optional # Added for type hinting
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -742,7 +743,10 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
         if overview_code_refs:
             documentation["sources"]["overview"].extend(overview_code_refs)
         
-        generate_html_page(documentation, output_dir, "overview")
+        if config.output_format == "markdown":
+            generate_markdown_page(documentation, output_dir, "overview")
+        else:
+            generate_html_page(documentation, output_dir, "overview")
         
         logging.info("Generating architecture overview...")
         architecture_prompt = """
@@ -775,7 +779,10 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
         if arch_code_refs:
             documentation["sources"]["architecture"].extend(arch_code_refs)
         
-        generate_html_page(documentation, output_dir, "architecture")
+        if config.output_format == "markdown":
+            generate_markdown_page(documentation, output_dir, "architecture")
+        else:
+            generate_html_page(documentation, output_dir, "architecture")
         
         logging.info("Generating architectural diagrams...")
         diagram_prompt = """
@@ -801,7 +808,10 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
                 "component_relationships": diagrams[2] if len(diagrams) > 2 else None
             }
             
-            generate_html_page(documentation, output_dir, "diagrams")
+            if config.output_format == "markdown":
+                generate_markdown_page(documentation, output_dir, "diagrams")
+            else:
+                generate_html_page(documentation, output_dir, "diagrams")
         
         logging.info("Analyzing key components...")
         component_analysis_prompt = """
@@ -924,8 +934,11 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
             
             documentation["components"][component_name] = component_details
             
-            generate_html_page(documentation, output_dir, f"component-{component_name}")
-        
+            if config.output_format == "markdown":
+                generate_markdown_page(documentation, output_dir, f"component-{component_name}")
+            else:
+                generate_html_page(documentation, output_dir, f"component-{component_name}")
+
         logging.info("Generating usage guide...")
         usage_prompt = """
         Create a comprehensive usage guide for this repository. Include:
@@ -963,7 +976,10 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
         if usage_code_refs:
             documentation["sources"]["usage"].extend(usage_code_refs)
         
-        generate_html_page(documentation, output_dir, "usage")
+        if config.output_format == "markdown":
+            generate_markdown_page(documentation, output_dir, "usage")
+        else:
+            generate_html_page(documentation, output_dir, "usage")
         
         logging.info("Generating installation guide...")
         installation_prompt = """
@@ -1001,7 +1017,10 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
             
             documentation["parameters"] = extract_parameters_from_content(all_component_examples)
         
-        generate_html_page(documentation, output_dir, "installation")
+        if config.output_format == "markdown":
+            generate_markdown_page(documentation, output_dir, "installation")
+        else:
+            generate_html_page(documentation, output_dir, "installation")
         
         logging.info("Generating advanced topics...")
         advanced_topics_prompt = """
@@ -1036,7 +1055,10 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
                     "code": example.strip()
                 })
         
-        generate_html_page(documentation, output_dir, "advanced_topics")
+        if config.output_format == "markdown":
+            generate_markdown_page(documentation, output_dir, "advanced_topics")
+        else:
+            generate_html_page(documentation, output_dir, "advanced_topics")
         
         logging.info("Generating examples and tutorials...")
         examples_prompt = """
@@ -1076,7 +1098,10 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
                     "code": example.strip()
                 })
         
-        generate_html_page(documentation, output_dir, "examples")
+        if config.output_format == "markdown":
+            generate_markdown_page(documentation, output_dir, "examples")
+        else:
+            generate_html_page(documentation, output_dir, "examples")
         
         deduplicate_sources(documentation)
         
@@ -1086,10 +1111,14 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
         with open(doc_file, "w") as f:
             json.dump(documentation, f, indent=2)
         
-        generate_final_html(documentation, output_dir)
+        # Generate final output based on format
+        if config.output_format == "markdown":
+            generate_final_markdown(documentation, output_dir)
+        else:
+            generate_final_html(documentation, output_dir)
         
-        logging.info(f"Documentation generated at {output_dir}")
-        return doc_file
+        logging.info(f"Documentation generated at {output_dir} in '{config.output_format}' format.")
+        return doc_file # Return the path to the JSON data file
     
     except Exception as e:
         logging.error(f"Error during documentation generation: {e}")
@@ -1155,6 +1184,66 @@ def generate_final_html(documentation, output_dir):
     generate_html_page(documentation, output_dir, "complete")
     html_file = output_dir / f"{documentation['name']}_documentation.html"
     return html_file
+
+
+# New function for Markdown page generation (Phase 1: logging only)
+def generate_markdown_page(documentation, output_dir, section=None):
+    logger = logging.getLogger(__name__)
+    logger.info(f"Markdown processing for section: {section if section else 'general (not writing to file per section)'}")
+    # For Phase 1, this function does not write to a file per section for Markdown.
+    # The main Markdown generation will happen in generate_final_markdown.
+    pass
+
+
+# New function for final Markdown generation
+def generate_final_markdown(documentation, output_dir) -> Optional[Path]:
+    logger = logging.getLogger(__name__)
+    template_dir = Path(__file__).parent / "templates" / "markdown"
+    
+    try:
+        # jinja2 is typically imported at the top of the file.
+        # If not, 'import jinja2' would be needed here or globally.
+        # Assuming jinja2 is already imported as it's used by generate_html_page.
+        import jinja2 
+    except ImportError:
+        logger.error("jinja2 library is not installed. Please install it to generate Markdown output.")
+        return None
+
+    try:
+        env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(template_dir),
+            autoescape=jinja2.select_autoescape(['md']), # For Markdown
+            undefined=jinja2.StrictUndefined # Raise error for undefined variables
+        )
+        
+        template = env.get_template("index.md.j2") 
+        
+        markdown_content = template.render(
+            documentation=documentation,
+            generated_at=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        )
+        
+        md_file = output_dir / f"{documentation['name']}_documentation.md"
+        with open(md_file, "w", encoding="utf-8") as f:
+            f.write(markdown_content)
+            
+        logger.info(f"Final Markdown documentation generated at {md_file}")
+        return md_file
+    except jinja2.exceptions.TemplateNotFound:
+        logger.error(f"Markdown template 'index.md.j2' not found in '{template_dir}'.")
+        logger.warning("Please create the Markdown template 'scripts/templates/markdown/index.md.j2' to generate the full Markdown document.")
+        # Create a dummy file to indicate an attempt was made, but it's incomplete.
+        dummy_md_file = output_dir / f"{documentation['name']}_documentation_TEMPLATE_MISSING.md"
+        error_message = f"# Markdown Generation Error\n\nTemplate `index.md.j2` not found in `{template_dir}`.\nPlease create this template to enable Markdown output."
+        with open(dummy_md_file, "w", encoding="utf-8") as f:
+            f.write(error_message)
+        logger.info(f"Created a placeholder error file at {dummy_md_file} due to missing template.")
+        return dummy_md_file # Return path to dummy file
+    except Exception as e:
+        logger.error(f"Error in generate_final_markdown: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return None
 
 
 def extract_tech_stack(documentation):
@@ -1278,12 +1367,18 @@ def generate_components_html(components):
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Generate documentation for GitHub repositories")
     
-    parser.add_argument(
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
         "repo_url",
         type=str,
         help="GitHub repository URL (e.g., https://github.com/metauto-ai/gptswarm)",
         nargs="?",
         default=None
+    )
+    group.add_argument(
+        "--local-path",
+        type=str,
+        help="Local path to the project directory."
     )
     
     parser.add_argument(
@@ -1327,6 +1422,13 @@ def parse_arguments():
         choices=["planning", "comprehensive (no planning)", "efficient (no planning)"],
         help="Planning strategy"
     )
+    parser.add_argument(
+        "--output-format",
+        type=str,
+        choices=["html", "markdown"],
+        default="html",
+        help="Output format for the documentation (html or markdown)."
+    )
     
     return parser.parse_args()
 
@@ -1353,11 +1455,9 @@ def main():
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s"
     )
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger(__name__) # Ensure logger is available in main
     
     args = parse_arguments()
-    
-    repo_url = args.repo_url or get_repo_url_interactive()
     
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -1365,11 +1465,31 @@ def main():
     judge_dir = output_dir / "judge"
     judge_dir.mkdir(parents=True, exist_ok=True)
     
+    repo_dir: Path
+    repo_url: Optional[str]
+
+    if args.local_path:
+        project_path_str = args.local_path
+        repo_dir = Path(project_path_str).resolve()
+        if not repo_dir.is_dir():
+            logger.error(f"Local path specified is not a valid directory: {repo_dir}")
+            sys.exit(1)
+        repo_url = None # Or repo_dir.as_uri() if preferred later
+        logger.info(f"Processing local project path: {repo_dir}")
+    else:
+        # args.repo_url must be set if local_path is not, due to mutually exclusive group
+        repo_url = args.repo_url 
+        if not repo_url: # Should not happen if argparse is set up correctly
+             repo_url = get_repo_url_interactive()
+        logger.info(f"Processing GitHub repository URL: {repo_url}")
+        # Download only if it's a URL
+        repo_dir = download_github_repo(repo_url, output_dir)
+
     start_time = time.time()
     
     try:
-        logger.info(f"Starting repository download and documentation: {repo_url}")
-        repo_dir = download_github_repo(repo_url, output_dir)
+        # logger.info(f"Starting repository download and documentation: {repo_url}") # Moved up
+        # repo_dir = download_github_repo(repo_url, output_dir) # Moved up and made conditional
         
         include_dirs = args.include_dirs.copy()
         common_code_dirs = ["src", "lib", "app", "core", "utils", "scripts", "tools", "services"]
@@ -1385,20 +1505,36 @@ def main():
             setting=args.setting,
             planning=args.planning,
             judge_dir=judge_dir,
-            workspace_dir=repo_dir.parent,
+            workspace_dir=repo_dir.parent, # repo_dir is now defined before this
             instance_dir=judge_dir,
+            output_format=args.output_format,
+            local_path=args.local_path # Pass the original local_path arg
         )
         
         logger.info(f"Agent configuration: include={agent_config.include_dirs}, exclude={agent_config.exclude_dirs}, "
-                    f"files={agent_config.exclude_files}, setting={agent_config.setting}, planning={agent_config.planning}")
+                    f"files={agent_config.exclude_files}, setting={agent_config.setting}, planning={agent_config.planning}, "
+                    f"output_format={agent_config.output_format}, local_path={agent_config.local_path}")
         
         doc_file = generate_repo_documentation(repo_dir, output_dir, agent_config, repo_url)
         
         total_time = time.time() - start_time
         logger.info(f"Total documentation time: {total_time:.2f} seconds")
         
-        html_file = output_dir / f"{repo_dir.name}_documentation.html"
-        json_file = output_dir / f"{repo_dir.name}_documentation.json"
+        # Determine final output file path based on format for user message
+        # doc_file is the JSON data file from generate_repo_documentation
+        json_file_path = doc_file 
+        final_doc_path: Optional[Path] = None
+
+        if args.output_format == "markdown":
+            # Check for the dummy file if template was missing, otherwise the expected actual file
+            expected_md_file = output_dir / f"{repo_dir.name}_documentation.md"
+            dummy_md_file = output_dir / f"{repo_dir.name}_documentation_TEMPLATE_MISSING.md"
+            if dummy_md_file.exists(): # If template was missing, this dummy file would have been created
+                final_doc_path = dummy_md_file
+            else: # Otherwise, point to the expected (potentially existing) actual md file
+                final_doc_path = expected_md_file
+        else: # html or default
+            final_doc_path = output_dir / f"{repo_dir.name}_documentation.html"
         
         try:
             with open(json_file, 'r') as f:
@@ -1415,9 +1551,22 @@ def main():
         print("\n" + "=" * 80)
         print(f"✅ Documentation generated successfully in {total_time:.2f} seconds!")
         print("-" * 80)
-        print(f"📄 JSON Documentation: {doc_file}")
-        print(f"🌐 HTML Documentation: {html_file}")
-        print(f"🔗 Open HTML file in browser: file://{html_file.absolute()}")
+        print(f"📄 JSON Data: {json_file_path}") # Print path to the JSON data file
+
+        if final_doc_path and final_doc_path.exists():
+            if final_doc_path.name.endswith("_TEMPLATE_MISSING.md"):
+                print(f"⚠️ Markdown Documentation (Template Missing): {final_doc_path}")
+                print(f"   A placeholder file was created. Please create 'index.md.j2' in 'scripts/templates/markdown/'.")
+            elif args.output_format == "markdown":
+                print(f"🖋️ Markdown Documentation: {final_doc_path}")
+                print(f"🔗 Open Markdown file: {final_doc_path.absolute()}")
+            else: # HTML
+                print(f"🌐 HTML Documentation: {final_doc_path}")
+                print(f"🔗 Open HTML file in browser: file://{final_doc_path.absolute()}")
+        elif final_doc_path : # Path was determined but file might not exist (e.g. Markdown template existed but render failed, or HTML failed)
+             print(f"Output document ({args.output_format}) was expected at '{final_doc_path}' but may not have been generated successfully (file not found).")
+        else: # Should not happen if final_doc_path is always determined based on args
+            print(f"Output document ({args.output_format}) could not be determined or was not generated.")
         print("=" * 80)
         
     except Exception as e:

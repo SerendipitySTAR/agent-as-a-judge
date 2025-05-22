@@ -14,6 +14,8 @@ class AgentConfig:
     workspace_dir: Optional[Path] = None
     instance_dir: Optional[Path] = None
     trajectory_file: Optional[Path] = None
+    output_format: str = "html"
+    local_path: Optional[str] = None
 
     @classmethod
     def from_args(cls, args):
@@ -38,6 +40,12 @@ class AgentConfig:
             workspace_dir=Path(args.workspace_dir),
             instance_dir=Path(args.instance_dir),
             trajectory_file=(
-                Path(args.trajectory_file) if args.trajectory_file else None
+                Path(args.trajectory_file) if hasattr(args, "trajectory_file") and args.trajectory_file else None
             ),
+            output_format=(
+                args.output_format if hasattr(args, "output_format") else "html"
+            ),
+            local_path=(
+                args.local_path if hasattr(args, "local_path") else None
+            )
         )
