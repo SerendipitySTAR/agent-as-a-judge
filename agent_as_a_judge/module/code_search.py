@@ -46,7 +46,8 @@ class DevCodeSearch:
         self.tree = self.load_tree()
         self.spacy_nlp = None
         self.bm25 = None
-        self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+        # self.embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
+        self.embedding_model = SentenceTransformer("/media/sc/AI/self-llm/embed_model/sentence-transformers/all-MiniLM-L6-v2")
         self.code_embeddings = None
 
     def search(

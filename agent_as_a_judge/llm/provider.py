@@ -39,12 +39,12 @@ class LLM:
         num_retries=3,
         retry_min_wait=1,
         retry_max_wait=10,
-        llm_timeout=30,
+        llm_timeout=300,
         llm_temperature=0.7,
         llm_top_p=0.9,
         custom_llm_provider=None,
-        max_input_tokens=4096,
-        max_output_tokens=2048,
+        max_input_tokens=32768,
+        max_output_tokens=16384,
         cost=None,
     ):
 

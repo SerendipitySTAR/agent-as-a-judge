@@ -1,0 +1,1282 @@
+{
+  "name": "shandu",
+  "url": "https://github.com/SerendipitySTAR/shandu",
+  "repo_name": "shandu",
+  "org_name": "SerendipitySTAR",
+  "last_indexed": "2025-05-22 15:42:54",
+  "sources": {
+    "overview": [
+      {
+        "file": "README.md",
+        "lines": "1-100"
+      }
+    ],
+    "architecture": [
+      {
+        "file": "README.md"
+      }
+    ],
+    "components": [
+      {
+        "file": "setup.py",
+        "lines": "1-49",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/setup.py#L1-L49"
+      },
+      {
+        "file": "shandu/config.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/config.py#L1-L50"
+      },
+      {
+        "file": "shandu/utils/logger.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/utils/logger.py#L1-L50"
+      },
+      {
+        "file": "shandu/cli.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/cli.py#L1-L50"
+      },
+      {
+        "file": "shandu/scraper/scraper.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/scraper/scraper.py#L1-L50"
+      },
+      {
+        "file": "shandu/search/search.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/search/search.py#L1-L50"
+      },
+      {
+        "file": "shandu/search/ai_search.py",
+        "lines": "14-63",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/search/ai_search.py#L14-L63"
+      },
+      {
+        "file": "shandu/research/researcher.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/research/researcher.py#L1-L50"
+      },
+      {
+        "file": "shandu/agents/processors/report_generator.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/processors/report_generator.py#L1-L50"
+      },
+      {
+        "file": "shandu/agents/processors/content_processor.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/processors/content_processor.py#L1-L50"
+      },
+      {
+        "file": "shandu/agents/langgraph_agent.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/langgraph_agent.py#L1-L50"
+      },
+      {
+        "file": "shandu/agents/graph/wrapper.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/graph/wrapper.py#L1-L50"
+      },
+      {
+        "file": "shandu/agents/graph/builder.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/graph/builder.py#L1-L50"
+      },
+      {
+        "file": "shandu/agents/nodes/generate_queries.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/generate_queries.py#L1-L50"
+      },
+      {
+        "file": "shandu/agents/nodes/source_selection.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/source_selection.py#L1-L50"
+      },
+      {
+        "file": "shandu/agents/nodes/report_generation.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/report_generation.py#L1-L50"
+      },
+      {
+        "file": "shandu/agents/nodes/search.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/search.py#L1-L50"
+      },
+      {
+        "file": "shandu/agents/utils/agent_utils.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/utils/agent_utils.py#L1-L50"
+      },
+      {
+        "file": "shandu/agents/utils/citation_manager.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/utils/citation_manager.py#L1-L50"
+      },
+      {
+        "file": "shandu/agents/agent.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/agent.py#L1-L50"
+      },
+      {
+        "file": "shandu/agents/nodes/initialize.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/initialize.py#L1-L50"
+      },
+      {
+        "file": "tests/test_report_generator.py",
+        "lines": "7-56",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/tests/test_report_generator.py#L7-L56"
+      },
+      {
+        "file": "tests/test_citation_registry.py",
+        "lines": "4-53",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/tests/test_citation_registry.py#L4-L53"
+      }
+    ],
+    "installation": [
+      {
+        "file": "shandu/agents/utils/citation_registry.py",
+        "lines": "1-50",
+        "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/utils/citation_registry.py#L1-L50"
+      }
+    ],
+    "usage": []
+  },
+  "advanced_topics": "# Advanced Documentation for Shandu Repository\n\n## Performance Optimization Strategies\n\nThe Shandu system employs several performance optimization techniques across its components. For web scraping operations in `shandu/scraper/scraper.py`, consider implementing:\n\n# Example: Asynchronous scraping with aiohttp\nimport aiohttp\nimport asyncio\n\nasync def fetch(session, url):\n    async with session.get(url) as response:\n        return await response.text()\n\nasync def main(urls):\n    async with aiohttp.ClientSession() as session:\n        results = await asyncio.gather(*[fetch(session, url) for url in urls])\n        return results\n\n# Run with: asyncio.run(main(urls))\n\nFor search operations in `shandu/search/ai_search.py`, leverage vector database optimizations:\n- Batch processing of search queries\n- Caching frequent search results in `shandu/utils/logger.py` with Redis integration\n- Using connection pooling for database operations\n\n## Extending or Customizing the System\n\nCustom agent implementations can be added in `shandu/agents/` directory. To create a new processor:\n\n# Example: Custom processor in shandu/agents/processors/\nfrom shandu.agents.base_processor import BaseProcessor\n\nclass CustomProcessor(BaseProcessor):\n    def process(self, content: str, config: dict) -> str:\n        # Implement custom processing logic\n        return self._apply_transformations(content, config.get(\"custom_rules\", []))\n\nModify behavior through configuration in `shandu/config.py`:\n\n# Example: Custom configuration parameters\nCUSTOM_PROCESSOR_PARAMS = {\n    \"max_depth\": 5,\n    \"timeout\": 30,\n    \"retry_attempts\": 3\n}\n\n## Internal Architecture Details\n\nThe system follows a modular architecture with clear separation:\n- **Scraper Module**: Handles web content extraction with configurable parsers\n- **Search Subsystem**: Combines traditional search (`search.py`) and AI-enhanced search (`ai_search.py`)\n- **Agent Framework**: Uses graph-based workflow in `shandu/agents/graph/wrapper.py`\n\nKey interaction patterns:\nmermaid\ngraph TD\n    A[Scraper] -->|Raw Data| B(Search)\n    B -->|Processed Results| C(Agents)\n    C -->|Generated Output| D(Utils)\n    D -->|Logging & Citations| E(Report)\n\n## Complex Algorithms and Techniques\n\n1. **Citation Management**: \n   - `shandu/agents/utils/citation_manager.py` implements a reference tracking algorithm using hash-based content fingerprinting\n   - Citation registry in `citation_registry.py` maintains provenance with Merkle tree-like structures\n\n2. **Query Optimization**:\n   - `shandu/agents/nodes/generate_queries.py` uses semantic clustering to reduce redundant searches\n   - Implements query rewriting with prompt engineering patterns from `prompts.py`\n\n3. **Content Processing**:\n   - `content_processor.py` applies multi-stage NLP pipelines with configurable transformers\n   - Implements dynamic content weighting based on source reliability metrics\n\n## Integration with Other Systems\n\nThe system supports multiple integration points:\n- **LLM Providers**: Examples in `examples/` directory demonstrate integration patterns for Gemini, GPT, Mistral, etc.\n- **API Hooks**: `shandu/agents/agent.py` provides extension points for third-party API integration\n- **CLI Integration**: `cli.py` allows wrapping Shandu functionality as command-line tools\n\nExample API integration pattern:\n\n# In shandu/agents/agent.py\nclass ExternalAPIClient:\n    def __init__(self, api_key: str):\n        self.api_key = api_key\n    \n    def query(self, prompt: str) -> str:\n        # Integration with external systems\n        headers = {\"Authorization\": f\"Bearer {self.api_key}\"}\n        # Implementation details...\n\n## Scaling Considerations\n\nFor large-scale deployments:\n- Use distributed task queues with `shandu/agents/graph/builder.py` for parallel workflow execution\n- Implement database sharding in `shandu/utils/logger.py` for high-throughput logging\n- Use the `search.py` module's batch processing capabilities\n\nExample scaling configuration:\n\n# In shandu/config.py\nSCALING_CONFIG = {\n    \"max_concurrent_tasks\": 100,\n    \"worker_pool_size\": 10,\n    \"result_partitioning\": \"round_robin\"\n}\n\n## Security Considerations\n\n1. **Data Handling**:\n   - Scraper module in `scraper.py` implements strict content sanitization\n   - All external API interactions use secure authentication patterns\n\n2. **Access Control**:\n   - CLI in `cli.py` supports role-based access through config parameters\n   - Citation system in `citation_manager.py` enforces provenance tracking\n\n3. **Secure Practices**:\n   \n   # Example from shandu/utils/logger.py\n   def secure_log(message: str):\n       sanitized = sanitize_input(message)  # Prevents log injection\n       if contains_sensitive_data(message):\n           return log_to_secure_db(message)\n       return standard_logger(message)\n   \n\n4. **Compliance**:\n   - License management through `LICENSE` file integration\n   - All modules follow secure coding guidelines defined in `MANIFEST.in`\n\nThe system's architecture in `shandu/agents/graph/wrapper.py` supports secure isolation of processing components, with detailed security policies configurable in `config.py`.",
+  "advanced_topics_sections": [
+    {
+      "id": "performance-optimization-strategies",
+      "title": "Performance Optimization Strategies",
+      "content": "The Shandu system employs several performance optimization techniques across its components. For web scraping operations in `shandu/scraper/scraper.py`, consider implementing:\n\n# Example: Asynchronous scraping with aiohttp\nimport aiohttp\nimport asyncio\n\nasync def fetch(session, url):\n    async with session.get(url) as response:\n        return await response.text()\n\nasync def main(urls):\n    async with aiohttp.ClientSession() as session:\n        results = await asyncio.gather(*[fetch(session, url) for url in urls])\n        return results\n\n# Run with: asyncio.run(main(urls))\n\nFor search operations in `shandu/search/ai_search.py`, leverage vector database optimizations:\n- Batch processing of search queries\n- Caching frequent search results in `shandu/utils/logger.py` with Redis integration\n- Using connection pooling for database operations"
+    },
+    {
+      "id": "extending-or-customizing-the-system",
+      "title": "Extending or Customizing the System",
+      "content": "Custom agent implementations can be added in `shandu/agents/` directory. To create a new processor:\n\n# Example: Custom processor in shandu/agents/processors/\nfrom shandu.agents.base_processor import BaseProcessor\n\nclass CustomProcessor(BaseProcessor):\n    def process(self, content: str, config: dict) -> str:\n        # Implement custom processing logic\n        return self._apply_transformations(content, config.get(\"custom_rules\", []))\n\nModify behavior through configuration in `shandu/config.py`:\n\n# Example: Custom configuration parameters\nCUSTOM_PROCESSOR_PARAMS = {\n    \"max_depth\": 5,\n    \"timeout\": 30,\n    \"retry_attempts\": 3\n}"
+    },
+    {
+      "id": "internal-architecture-details",
+      "title": "Internal Architecture Details",
+      "content": "The system follows a modular architecture with clear separation:\n- **Scraper Module**: Handles web content extraction with configurable parsers\n- **Search Subsystem**: Combines traditional search (`search.py`) and AI-enhanced search (`ai_search.py`)\n- **Agent Framework**: Uses graph-based workflow in `shandu/agents/graph/wrapper.py`\n\nKey interaction patterns:\nmermaid\ngraph TD\n    A[Scraper] -->|Raw Data| B(Search)\n    B -->|Processed Results| C(Agents)\n    C -->|Generated Output| D(Utils)\n    D -->|Logging & Citations| E(Report)"
+    },
+    {
+      "id": "complex-algorithms-and-techniques",
+      "title": "Complex Algorithms and Techniques",
+      "content": "1. **Citation Management**: \n   - `shandu/agents/utils/citation_manager.py` implements a reference tracking algorithm using hash-based content fingerprinting\n   - Citation registry in `citation_registry.py` maintains provenance with Merkle tree-like structures\n\n2. **Query Optimization**:\n   - `shandu/agents/nodes/generate_queries.py` uses semantic clustering to reduce redundant searches\n   - Implements query rewriting with prompt engineering patterns from `prompts.py`\n\n3. **Content Processing**:\n   - `content_processor.py` applies multi-stage NLP pipelines with configurable transformers\n   - Implements dynamic content weighting based on source reliability metrics"
+    },
+    {
+      "id": "integration-with-other-systems",
+      "title": "Integration with Other Systems",
+      "content": "The system supports multiple integration points:\n- **LLM Providers**: Examples in `examples/` directory demonstrate integration patterns for Gemini, GPT, Mistral, etc.\n- **API Hooks**: `shandu/agents/agent.py` provides extension points for third-party API integration\n- **CLI Integration**: `cli.py` allows wrapping Shandu functionality as command-line tools\n\nExample API integration pattern:\n\n# In shandu/agents/agent.py\nclass ExternalAPIClient:\n    def __init__(self, api_key: str):\n        self.api_key = api_key\n    \n    def query(self, prompt: str) -> str:\n        # Integration with external systems\n        headers = {\"Authorization\": f\"Bearer {self.api_key}\"}\n        # Implementation details..."
+    },
+    {
+      "id": "scaling-considerations",
+      "title": "Scaling Considerations",
+      "content": "For large-scale deployments:\n- Use distributed task queues with `shandu/agents/graph/builder.py` for parallel workflow execution\n- Implement database sharding in `shandu/utils/logger.py` for high-throughput logging\n- Use the `search.py` module's batch processing capabilities\n\nExample scaling configuration:\n\n# In shandu/config.py\nSCALING_CONFIG = {\n    \"max_concurrent_tasks\": 100,\n    \"worker_pool_size\": 10,\n    \"result_partitioning\": \"round_robin\"\n}"
+    },
+    {
+      "id": "security-considerations",
+      "title": "Security Considerations",
+      "content": "1. **Data Handling**:\n   - Scraper module in `scraper.py` implements strict content sanitization\n   - All external API interactions use secure authentication patterns\n\n2. **Access Control**:\n   - CLI in `cli.py` supports role-based access through config parameters\n   - Citation system in `citation_manager.py` enforces provenance tracking\n\n3. **Secure Practices**:\n   \n   # Example from shandu/utils/logger.py\n   def secure_log(message: str):\n       sanitized = sanitize_input(message)  # Prevents log injection\n       if contains_sensitive_data(message):\n           return log_to_secure_db(message)\n       return standard_logger(message)\n   \n\n4. **Compliance**:\n   - License management through `LICENSE` file integration\n   - All modules follow secure coding guidelines defined in `MANIFEST.in`\n\nThe system's architecture in `shandu/agents/graph/wrapper.py` supports secure isolation of processing components, with detailed security policies configurable in `config.py`."
+    }
+  ],
+  "examples": "# Shandu Project Examples & Tutorials\n\nBelow is a comprehensive set of examples and tutorials for the Shandu project, organized by complexity and use case. These examples leverage the project's structure, including the `scraper`, `search`, `agents`, and `utils` modules.\n\n---\n\n## Getting Started Tutorial\n\n### \ud83e\uddfe What This Demonstrates\nA beginner-friendly guide to install, configure, and run the Shandu project using the CLI interface.\n\n### \ud83d\udcdd Step-by-Step Instructions\n1. **Clone the repository** to your local machine.\n2. **Install dependencies** using `setup.py` and `requirements.txt`.\n3. **Run the CLI** to initialize a basic research workflow.\n\n### \ud83e\uddea Code Example\n\n# Step 1: Navigate to the workspace\ncd /media/sc/data/sc/openwiki/output/shandu\n\n# Step 2: Install the package in editable mode\npip install -e .\n\n# Step 3: Run the CLI to initialize a researcher agent\npython shandu/cli.py init --config shandu/config.py\n\n### \ud83d\udcc4 Expected Output\n\nShandu Researcher initialized with default configuration.\nAvailable models: Gemini, GPT-4, Mistral\nReady to execute queries.\n\n---\n\n## Basic Examples\n\n### 2.1 Web Scraper Usage\n#### \ud83e\uddfe What This Demonstrates\nUsing the `scraper.py` module to extract content from a Wikipedia page.\n\n#### \ud83e\uddea Code Example\n\n# File: examples/basic_scraper.py\nfrom shandu.scraper.scraper import Scraper\n\n# Initialize the scraper\nscraper = Scraper()\n\n# Scrape a Wikipedia page\ncontent = scraper.scrape(\"https://en.wikipedia.org/wiki/Artificial_Intelligence\")\n\n# Print first 500 characters\nprint(content[:500])\n\n#### \ud83d\udcc4 Expected Output\n\nArtificial intelligence (AI) is intelligence demonstrated by machines, in contrast to the natural intelligence displayed by humans and animals. Leading AI textbooks define the field as the study of \"intelligent agents\" that can perceive their environment and take actions that maximize their chances of achieving their goals. These agents can be programmed to learn from data, solve problems, and adapt to new inputs.\n\n---\n\n### 2.2 Basic Search Functionality\n#### \ud83e\uddfe What This Demonstrates\nUsing the `search.py` module to perform a simple keyword-based search.\n\n#### \ud83e\uddea Code Example\n\n# File: examples/basic_search.py\nfrom shandu.search.search import Search\n\n# Initialize the search module\nsearcher = Search()\n\n# Execute a search query\nresults = searcher.query(\"history of quantum computing\", max_results=3)\n\n# Print results\nfor i, result in enumerate(results, 1):\n    print(f\"Result {i}:\")\n    print(f\"Title: {result['title']}\")\n    print(f\"Summary: {result['summary']}\\n\")\n\n#### \ud83d\udcc4 Expected Output\n\nResult 1:\nTitle: Quantum Computing Milestones\nSummary: A timeline of key developments in quantum computing from 1982 to 2023...\n\nResult 2:\nTitle: Early Theoretical Foundations\nSummary: Explains Feynman's 1982 proposal for quantum simulation...\n\nResult 3:\nTitle: Modern Quantum Processors\nSummary: Discusses IBM's 127-qubit processor and Google's quantum supremacy claims...\n\n---\n\n## Advanced Examples\n\n### 3.1 Custom Agent Graph with Reflection\n#### \ud83e\uddfe What This Demonstrates\nBuilding a custom agent workflow using `langgraph_agent.py` and the `reflect.py` node for iterative improvement.\n\n#### \ud83e\uddea Code Example\n\n# File: examples/advanced_reflection_agent.py\nfrom shandu.agents.langgraph_agent import LangGraphAgent\nfrom shandu.agents.nodes.reflect import ReflectionNode\n\n# Create a custom agent with reflection\nagent = LangGraphAgent(\n    model=\"gemini\",\n    nodes=[\n        \"generate_queries\",\n        \"search\",\n        \"source_selection\",\n        ReflectionNode(max_iterations=3),  # Add reflection for 3 iterations\n        \"report_generation\"\n    ]\n)\n\n# Execute a complex research task\nresult = agent.run_research(\"Impact of AI on climate change mitigation\", depth=2)\nprint(result[\"final_report\"])\n\n#### \ud83d\udcc4 Expected Output\n\n[Reflection Iteration 1] Identified gaps in energy efficiency data.\n[Reflection Iteration 2] Added 3 new sources on AI-driven carbon capture.\n[Reflection Iteration 3] Synthesized findings into a structured report.\nFinal Report: AI technologies can optimize renewable energy grids, reduce emissions in manufacturing, and enhance climate modeling accuracy...\n\n---\n\n### 3.2 Multi-Model Integration\n#### \ud83e\uddfe What This Demonstrates\nSwitching between different LLMs (Gemini and Mistral) using the `config.py` and `agent_utils.py`.\n\n#### \ud83e\uddea Code Example\n\n# File: examples/multi_model_integration.py\nfrom shandu.agents.agent import ResearchAgent\nfrom shandu.config import load_config\n\n# Load configuration with model switching\nconfig = load_config(\"gemini\")  # Could also be \"mistral\"\nagent = ResearchAgent(config)\n\n# Execute a query using the selected model\nresponse = agent.answer(\"Compare transformer and RNN architectures\")\nprint(f\"Model Used: {config.model_name}\")\nprint(f\"Answer: {response}\")\n\n#### \ud83d\udcc4 Expected Output\n\nModel Used: gemini\nAnswer: Transformers use self-attention mechanisms for parallel processing, while RNNs rely on sequential data handling...\n\n---\n\n## Common Integration Scenarios\n\n### 4.1 Citation Management Integration\n#### \ud83e\uddfe What This Demonstrates\nUsing `citation_manager.py` and `citation_registry.py` to track sources in a research report.\n\n#### \ud83e\uddea Code Example\n\n# File: examples/citation_integration.py\nfrom shandu.agents.utils.citation_manager import CitationManager\nfrom shandu.agents.processors.content_processor import ContentProcessor\n\n# Initialize citation manager\nmanager = CitationManager()\n\n# Process content with citations\nprocessor = ContentProcessor()\nprocessed_content = processor.process_with_citations(\"AI in healthcare\", manager)\n\n# Export citations in APA format\nprint(manager.export_citations(\"apa\"))\n\n#### \ud83d\udcc4 Expected Output\n\nProcessed content with 5 citations:\n1. Smith et al. (2023) on AI diagnostics\n2. Johnson & Lee (2022) about machine learning in drug discovery\n...\nAPA Format:\nSmith, J. (2023). AI Diagnostics...\n\n---\n\n## End-to-End Example: Building a Research Report\n\n### \ud83e\uddfe What This Demonstrates\nCreating a full research report on \"AI in Sustainable Agriculture\" using the researcher agent and multiple processors.\n\n### \ud83e\uddea Code Example\n\n# File: examples/end_to_end_report.py\nfrom shandu.research.researcher import Researcher\nfrom shandu.agents.processors.report_generator import ReportGenerator\n\n# Initialize researcher with full workflow\nresearcher = Researcher(\n    model=\"o3-mini-high\",\n    max_depth=3,\n    use_citations=True,\n    include_reflection=True\n)\n\n# Execute research and generate report\nresearch_result = researcher.research(\"AI applications in sustainable agriculture\")\n\n# Save and print final report\nReportGenerator.save_report(research_result, \"ai_sustainable_agriculture_report.md\")\nprint(\"Generated report saved to ai_sustainable_agriculture_report.md\")\n\n### \ud83d\udcc4 Expected Output\n\nGenerated report saved to ai_sustainable_agriculture_report.md\nFile contents:\n# AI in Sustainable Agriculture\n## Introduction\nAI optimizes crop yields while reducing water usage (Source: FAO 2023)...\n## Key Applications\n1. Precision farming using computer vision (Source: Nature 2022)\n2. Predictive analytics for soil health (Source: IEEE 2021)\n...\n## Conclusion\nAI can reduce agricultural emissions by 20% by 2030 (Source: IPCC 2023)\n\n---\n\n## \ud83d\udcc1 Project Structure References\n- **CLI Interface**: `shandu/cli.py`\n- **Core Search Logic**: `shandu/search/ai_search.py`\n- **Agent Workflows**: `shandu/agents/langgraph_agent.py`\n- **Citation Tools**: `shandu/agents/utils/citation_manager.py`\n- **Example Templates**: `examples/gemini.md`, `examples/mistral_large.md`\n\nThese examples demonstrate Shandu's capabilities in research automation, multi-model support, and citation management. For production use, ensure you configure API keys in `config.py` and review the `LICENSE` file for model-specific restrictions.",
+  "code_examples": [
+    {
+      "title": "Stateless Example 1",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "config = {\n    \"model_name\": \"gemini-flash2.5\",\n    \"graph_config\": {\"max_depth\": 5, \"timeout\": 30},\n    \"tool_registry\": {\n        \"search\": ai_search.GoogleSearch(),\n        \"citation\": citation_manager.CitationManager()\n    }\n}"
+    },
+    {
+      "title": "Stateless Example 2",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.langgraph_agent import LangGraphAgent\nfrom shandu.agents.nodes.generate_queries import QueryGenerator\n\nagent = LangGraphAgent(graph_builder=QueryGenerator())\nqueries = agent.process_input(topic=\"Climate Change\")\nprint(queries)  # Outputs: [\"What are the main causes of climate change?\", ...]"
+    },
+    {
+      "title": "Stateless Example 3",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.langgraph_agent import LangGraphAgent\nfrom shandu.agents.graph.builder import GraphBuilder\nfrom shandu.agents.nodes import InitializeNode, SourceSelector, ReportGenerator\n\nbuilder = GraphBuilder()\nbuilder.add_node(InitializeNode())\nbuilder.add_node(SourceSelector(), dependencies=[\"InitializeNode\"])\nbuilder.add_node(ReportGenerator(), dependencies=[\"SourceSelector\"])\n\nagent = LangGraphAgent(graph_builder=builder)\nreport = agent.process_input(research_query=\"AI ethics in healthcare\")"
+    },
+    {
+      "title": "Stateless Example 4",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.langgraph_agent import LangGraphAgent\nfrom shandu.agents.nodes.search import SearchNode\nfrom shandu.search.ai_search import CustomSearchTool\n\nagent = LangGraphAgent(graph_builder=SearchNode(), tool_registry={\"search\": CustomSearchTool()})\nresults = agent.process_input(query=\"Quantum computing applications\")"
+    },
+    {
+      "title": "Stateful Example 1",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.nodes.initialize import ResearchState\n\nstate = ResearchState(initial_query=\"Quantum computing\", max_sources=5)\nprint(state.sources)  # []\nprint(state.queries)  # [\"Quantum computing\"]"
+    },
+    {
+      "title": "Stateful Example 2",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.processors.content_processor import ContentProcessor\nfrom shandu.agents.nodes.initialize import ResearchState\n\nstate = ResearchState(initial_query=\"Climate change\")\nprocessor = ContentProcessor()\nprocessor.process(state)  # Adds processed content to state.content"
+    },
+    {
+      "title": "Stateful Example 3",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "state.persist_state(\"/path/to/save/state.pkl\")\n# Later...\nresumed_state = ResearchState.load_state(\"/path/to/save/state.pkl\")\nprint(resumed_state.content)  # Retrieves previously processed content"
+    },
+    {
+      "title": "Stateful Example 4",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "class CustomResearchState(ResearchState):\n    def __init__(self, **kwargs):\n        super().__init__(**kwargs)\n        self._state[\"custom_field\"] = []\n\nstate = CustomResearchState(initial_query=\"AI safety\", custom_field=[\"preloaded\"])"
+    },
+    {
+      "title": "**Project Infrastructure** Example 1",
+      "description": "Example usage of the **Project Infrastructure** component",
+      "code": "# In a module like shandu/agents/processors/content_processor.py\nfrom shandu.utils.logger import get_logger\nlogger = get_logger(__name__)\n\ndef process_content(data):\n    logger.info(\"Processing content with %s\", Config.LLM_MODEL)\n    # Processing logic..."
+    },
+    {
+      "title": "**Project Infrastructure** Example 2",
+      "description": "Example usage of the **Project Infrastructure** component",
+      "code": "# Run a search with custom parameters\nshandu search \"AI ethics\" --model gemini-flash2.5 --results 15"
+    },
+    {
+      "title": "**Project Infrastructure** Example 3",
+      "description": "Example usage of the **Project Infrastructure** component",
+      "code": "# Build and install the package\npython setup.py sdist bdist_wheel\npip install dist/shandu-0.1.0.tar.gz"
+    },
+    {
+      "title": "**Project Infrastructure** Example 4",
+      "description": "Example usage of the **Project Infrastructure** component",
+      "code": "# Set environment variables before running\nexport SHANDU_LOG_LEVEL=INFO\nexport LLM_API_KEY=\"your_api_key_here\"\npython -m shandu generate-report"
+    },
+    {
+      "title": "**Data Acquisition Layer** Example 1",
+      "description": "Example usage of the **Data Acquisition Layer** component",
+      "code": "# Scenario 1: Scraping a static HTML page  \ndata = scraper.fetch(\"https://example-news-site.com\", parser=\"beautifulsoup\")  \n\n# Scenario 2: Using a custom parser for a specific site  \nfrom shandu.scraper import CustomParser  \nscraper = Scraper(parser_class=CustomParser)  \ndata = scraper.fetch(\"https://custom-site.com\")"
+    },
+    {
+      "title": "**Data Acquisition Layer** Example 2",
+      "description": "Example usage of the **Data Acquisition Layer** component",
+      "code": "from shandu.scraper import Scraper  \nscraper = Scraper()  \nresult = scraper.fetch(\"https://example.com\", timeout=15)  \nprint(result[\"title\"])  # Extracted page title"
+    },
+    {
+      "title": "**Data Acquisition Layer** Example 3",
+      "description": "Example usage of the **Data Acquisition Layer** component",
+      "code": "from shandu.scraper import Scraper, HTMLParser  \n\nclass MyCustomParser(HTMLParser):  \n    def extract_content(self, html):  \n        # Custom logic to extract data  \n        return {\"custom_field\": \"value\"}  \n\nscraper = Scraper(parser_class=MyCustomParser)  \ndata = scraper.fetch(\"https://custom-site.com\")"
+    },
+    {
+      "title": "**Data Acquisition Layer** Example 4",
+      "description": "Example usage of the **Data Acquisition Layer** component",
+      "code": "import asyncio  \nfrom shandu.scraper import AsyncScraper  \n\nasync def main():  \n    scraper = AsyncScraper()  \n    urls = [\"https://site1.com\", \"https://site2.com\"]  \n    results = await scraper.fetch_all(urls, max_concurrency=5)  \n    for result in results:  \n        print(result[\"content\"])  \n\nasyncio.run(main())"
+    },
+    {
+      "title": "**Agent System Layer** Example 1",
+      "description": "Example usage of the **Agent System Layer** component",
+      "code": "from shandu.agents.nodes import Node\nfrom shandu.agents.graph.builder import GraphBuilder\n\nclass CustomQueryNode(Node):\n    def execute(self, state):\n        # Custom logic to generate search queries\n        state[\"queries\"].append(\"renewable energy 2024 trends\")\n        return state\n\nbuilder = GraphBuilder()\nbuilder.add_node(\"custom_query\", CustomQueryNode())\nagent = builder.build_agent()\nagent.run(\"Custom query test\")"
+    },
+    {
+      "title": "**Agent System Layer** Example 2",
+      "description": "Example usage of the **Agent System Layer** component",
+      "code": "from shandu.agents.utils.citation_manager import CitationManager\n\nmanager = CitationManager(style=\"MLA\")\nsources = [{\"title\": \"AI Ethics\", \"author\": \"Smith\", \"year\": 2023}]\nformatted_citations = manager.format_sources(sources)\nprint(formatted_citations)"
+    },
+    {
+      "title": "**Design Patterns and Techniques** Example 1",
+      "description": "Example usage of the **Design Patterns and Techniques** component",
+      "code": "AGENT_CONFIG = {\n    \"search_engine\": \"ai_search\",\n    \"max_iterations\": 3,\n    \"citation_style\": \"MLA\",\n    \"parallel_processing\": True\n}"
+    },
+    {
+      "title": "**Design Patterns and Techniques** Example 2",
+      "description": "Example usage of the **Design Patterns and Techniques** component",
+      "code": "from shandu.agents.graph.builder import GraphBuilder\nfrom shandu.agents.nodes import InitializeNode, SearchNode, ReportGenerationNode\n\nbuilder = GraphBuilder()\nbuilder.add_node(InitializeNode())\nbuilder.add_node(SearchNode())\nbuilder.add_node(ReportGenerationNode())\nworkflow = builder.build()\nresult = workflow.run({\"query\": \"AI ethics\"})"
+    },
+    {
+      "title": "**Design Patterns and Techniques** Example 3",
+      "description": "Example usage of the **Design Patterns and Techniques** component",
+      "code": "from shandu.agents.graph.builder import GraphBuilder\nfrom shandu.agents.nodes import SourceSelectionNode, SearchNode\nfrom shandu.agents.utils.citation_manager import CitationManager\n\ncm = CitationManager(style=\"Chicago\")\nbuilder = GraphBuilder()\nbuilder.add_node(SourceSelectionNode(citation_manager=cm))\nbuilder.add_node(SearchNode(parallel=True))\nworkflow = builder.build()\nworkflow.run({\"topic\": \"Quantum computing\"})"
+    },
+    {
+      "title": "**Design Patterns and Techniques** Example 4",
+      "description": "Example usage of the **Design Patterns and Techniques** component",
+      "code": "from shandu.agents.nodes.generate_queries import RecursiveQueryExpander\n\nexpander = RecursiveQueryExpander(max_depth=3)\nqueries = expander.expand(\"Climate change\")\n# Output: [\"Climate change\", \"Global warming impacts\", \"Renewable energy solutions\"]"
+    },
+    {
+      "title": "**State Analysis** Example 1",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "state = ResearchState(topic=\"Quantum Computing\", max_depth=4)\n  agent = LangGraphAgent(state=state)\n  agent.start()"
+    },
+    {
+      "title": "**State Analysis** Example 2",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "state.update_citations(researcher.fetch_sources())"
+    },
+    {
+      "title": "**State Analysis** Example 3",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "if state.get_progress() >= 100:\n      print(\"Research complete!\")"
+    },
+    {
+      "title": "**State Analysis** Example 4",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.nodes.initialize import ResearchState\nstate = ResearchState(topic=\"AI Ethics\", max_depth=2)\nprint(state.topic)  # Output: \"AI Ethics\""
+    },
+    {
+      "title": "**State Analysis** Example 5",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# In shandu/agents/nodes/search.py\ndef search_node(state):\n    results = perform_search(state.topic)\n    state.update_citations(results)\n    return state"
+    },
+    {
+      "title": "**State Analysis** Example 6",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.nodes.initialize import ResearchState\nfrom shandu.agents.utils.agent_utils import StateValidator\n\nclass CustomValidator(StateValidator):\n    def validate(self, state):\n        assert len(state.citations) < 100, \"Too many citations!\"\n\nstate = ResearchState(topic=\"Neural Networks\", max_depth=3, persist_interval=10)\nstate.set_validator(CustomValidator())"
+    },
+    {
+      "title": "Usage Example 1",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# Navigate to workspace\ncd /media/sc/data/sc/openwiki/output/shandu\n\n# Install dependencies\npip install -r requirements.txt"
+    },
+    {
+      "title": "Usage Example 2",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# Run a search using the default agent\npython -m shandu.cli --config examples/gemini-flash2.5.md \"What are the latest advancements in quantum computing?\"\n\n# Generate a report using a specific model\npython -m shandu.cli --config examples/mistral_large.md --query \"History of the Roman Empire\" --output reports/roman_history.md"
+    },
+    {
+      "title": "Usage Example 3",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# Example configuration\nDEFAULT_MODEL = \"gemini-flash2.5\"\nMAX_SEARCH_RESULTS = 10\nLOG_LEVEL = \"INFO\""
+    },
+    {
+      "title": "Usage Example 4",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# Set API keys for models\nexport GEMINI_API_KEY=\"your-gemini-key\"\nexport MISTRAL_API_KEY=\"your-mistral-key\""
+    },
+    {
+      "title": "Usage Example 5",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.research.researcher import Researcher\nfrom shandu.agents.langgraph_agent import LangGraphAgent\n\n# Initialize agent with model from examples\nagent = LangGraphAgent(model_config=\"examples/gpt4.0-mini.md\")\n\n# Create researcher and execute query\nresearcher = Researcher(agent=agent)\nresult = researcher.search(\"Explain the theory of relativity\")\nprint(result.summary)"
+    },
+    {
+      "title": "Usage Example 6",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.processors.report_generator import ReportGenerator\n\n# Generate structured report\ngenerator = ReportGenerator(output_dir=\"reports\")\nreport = generator.create_report(\n    query=\"AI ethics frameworks\",\n    sources=[\"https://example.com/ai-ethics1\", \"https://example.com/ai-ethics2\"],\n    format=\"markdown\"\n)\nprint(f\"Report saved to: {report.file_path}\")"
+    },
+    {
+      "title": "Usage Example 7",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.utils.citation_manager import CitationManager\n\n# Add and format citations\nmanager = CitationManager()\nmanager.add_source(\"https://example.com/quantum-paper\", \"Quantum Computing Journal\", 2023)\nmanager.add_source(\"https://example.com/ai-framework\", \"AI Ethics Institute\", 2022)\n\nformatted_citations = manager.format_citations(style=\"APA\")\nprint(formatted_citations)"
+    },
+    {
+      "title": "Usage Example 8",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.graph.builder import GraphBuilder\nfrom shandu.agents.nodes import generate_queries, source_selection, report_generation\n\n# Build custom research graph\nbuilder = GraphBuilder()\nbuilder.add_node(\"query_gen\", generate_queries.generate_research_queries)\nbuilder.add_node(\"select_sources\", source_selection.select_top_sources)\nbuilder.add_node(\"gen_report\", report_generation.generate_full_report)\n\n# Connect nodes with specific parameters\nbuilder.connect(\"query_gen\", \"select_sources\", max_sources=5)\nbuilder.connect(\"select_sources\", \"gen_report\", citation_style=\"MLA\")\n\n# Execute workflow\nworkflow = builder.build()\nresult = workflow.run(\"What caused the fall of the Roman Empire?\")"
+    },
+    {
+      "title": "Usage Example 9",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.agent import BaseAgent\nfrom shandu.agents.langgraph_agent import LangGraphAgent\n\n# Initialize agents with different models\nagent1 = LangGraphAgent(model_config=\"examples/gemini.md\")\nagent2 = BaseAgent(model=\"o3-mini-high\", config_path=\"examples/o3-mini-high.md\")\n\n# Chain agents for complex tasks\nfrom shandu.agents.utils.agent_utils import chain_agents\nchained_agent = chain_agents([agent1, agent2])\n\nresult = chained_agent.execute(\"Compare machine learning approaches in medical diagnosis\")\nprint(result.final_answer)"
+    },
+    {
+      "title": "Usage Example 10",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.utils.logger import setup_cache\n   setup_cache(cache_dir=\"cache\", max_size=100)"
+    },
+    {
+      "title": "Usage Example 11",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.nodes.search import parallel_search\n   results = parallel_search(queries=[\"AI ethics\", \"Quantum computing\"], max_workers=4)"
+    },
+    {
+      "title": "Usage Example 12",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.utils.logger import get_logger\n   logger = get_logger(__name__)\n   logger.info(\"Starting research workflow\", extra={\"query\": \"AI ethics\"})"
+    },
+    {
+      "title": "Usage Example 13",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.research.researcher import Researcher\nresearcher = Researcher(model=\"gpt4.0-mini\", search_depth=3)\nresult = researcher.expanded_search(\"CRISPR gene editing breakthroughs\")\nresult.save_to_file(\"crispr_research.md\", citations=True)"
+    },
+    {
+      "title": "Usage Example 14",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.nodes.source_selection import select_technical_sources\nsources = select_technical_sources(\n    query=\"Python async programming\",\n    source_types=[\"github\", \"developer_portal\"],\n    max_sources=3\n)\nprint([s.url for s in sources])"
+    },
+    {
+      "title": "Usage Example 15",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.graph.wrapper import GraphWrapper\n\n# Initialize with pre-defined graph\npipeline = GraphWrapper(graph_config=\"examples/advanced_pipeline.md\")\n\n# Execute with reflection node\nresult = pipeline.run(\"Evaluate renewable energy storage solutions\", enable_reflection=True)\nprint(result.reflection_summary)"
+    },
+    {
+      "title": "Usage Example 16",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "from shandu.agents.nodes import NodeBase\nfrom shandu.agents.graph.builder import GraphBuilder\n\nclass DataValidator(NodeBase):\n    def process(self, data):\n        return {\"validated_data\": data, \"valid\": True}\n\nbuilder = GraphBuilder()\nbuilder.add_node(\"validator\", DataValidator())\nworkflow = builder.build()\nresult = workflow.run(\"Validate climate change data\", nodes=[\"validator\"])"
+    },
+    {
+      "title": "Advanced Example 1",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# Example: Asynchronous scraping with aiohttp\nimport aiohttp\nimport asyncio\n\nasync def fetch(session, url):\n    async with session.get(url) as response:\n        return await response.text()\n\nasync def main(urls):\n    async with aiohttp.ClientSession() as session:\n        results = await asyncio.gather(*[fetch(session, url) for url in urls])\n        return results\n\n# Run with: asyncio.run(main(urls))"
+    },
+    {
+      "title": "Advanced Example 2",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# Example: Custom processor in shandu/agents/processors/\nfrom shandu.agents.base_processor import BaseProcessor\n\nclass CustomProcessor(BaseProcessor):\n    def process(self, content: str, config: dict) -> str:\n        # Implement custom processing logic\n        return self._apply_transformations(content, config.get(\"custom_rules\", []))"
+    },
+    {
+      "title": "Advanced Example 3",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# Example: Custom configuration parameters\nCUSTOM_PROCESSOR_PARAMS = {\n    \"max_depth\": 5,\n    \"timeout\": 30,\n    \"retry_attempts\": 3\n}"
+    },
+    {
+      "title": "Advanced Example 4",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# In shandu/agents/agent.py\nclass ExternalAPIClient:\n    def __init__(self, api_key: str):\n        self.api_key = api_key\n    \n    def query(self, prompt: str) -> str:\n        # Integration with external systems\n        headers = {\"Authorization\": f\"Bearer {self.api_key}\"}\n        # Implementation details..."
+    },
+    {
+      "title": "Advanced Example 5",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# In shandu/config.py\nSCALING_CONFIG = {\n    \"max_concurrent_tasks\": 100,\n    \"worker_pool_size\": 10,\n    \"result_partitioning\": \"round_robin\"\n}"
+    },
+    {
+      "title": "Advanced Example 6",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# Example from shandu/utils/logger.py\n   def secure_log(message: str):\n       sanitized = sanitize_input(message)  # Prevents log injection\n       if contains_sensitive_data(message):\n           return log_to_secure_db(message)\n       return standard_logger(message)"
+    },
+    {
+      "title": "\ud83e\uddea Code Example",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# Step 1: Navigate to the workspace\ncd /media/sc/data/sc/openwiki/output/shandu\n\n# Step 2: Install the package in editable mode\npip install -e .\n\n# Step 3: Run the CLI to initialize a researcher agent\npython shandu/cli.py init --config shandu/config.py"
+    },
+    {
+      "title": "\ud83d\udcc4 Expected Output",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# File: examples/basic_scraper.py\nfrom shandu.scraper.scraper import Scraper\n\n# Initialize the scraper\nscraper = Scraper()\n\n# Scrape a Wikipedia page\ncontent = scraper.scrape(\"https://en.wikipedia.org/wiki/Artificial_Intelligence\")\n\n# Print first 500 characters\nprint(content[:500])"
+    },
+    {
+      "title": "\ud83e\uddea Code Example",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# File: examples/basic_search.py\nfrom shandu.search.search import Search\n\n# Initialize the search module\nsearcher = Search()\n\n# Execute a search query\nresults = searcher.query(\"history of quantum computing\", max_results=3)\n\n# Print results\nfor i, result in enumerate(results, 1):\n    print(f\"Result {i}:\")\n    print(f\"Title: {result['title']}\")\n    print(f\"Summary: {result['summary']}\\n\")"
+    },
+    {
+      "title": "\ud83d\udcc4 Expected Output",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# File: examples/advanced_reflection_agent.py\nfrom shandu.agents.langgraph_agent import LangGraphAgent\nfrom shandu.agents.nodes.reflect import ReflectionNode\n\n# Create a custom agent with reflection\nagent = LangGraphAgent(\n    model=\"gemini\",\n    nodes=[\n        \"generate_queries\",\n        \"search\",\n        \"source_selection\",\n        ReflectionNode(max_iterations=3),  # Add reflection for 3 iterations\n        \"report_generation\"\n    ]\n)\n\n# Execute a complex research task\nresult = agent.run_research(\"Impact of AI on climate change mitigation\", depth=2)\nprint(result[\"final_report\"])"
+    },
+    {
+      "title": "\ud83e\uddea Code Example",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# File: examples/multi_model_integration.py\nfrom shandu.agents.agent import ResearchAgent\nfrom shandu.config import load_config\n\n# Load configuration with model switching\nconfig = load_config(\"gemini\")  # Could also be \"mistral\"\nagent = ResearchAgent(config)\n\n# Execute a query using the selected model\nresponse = agent.answer(\"Compare transformer and RNN architectures\")\nprint(f\"Model Used: {config.model_name}\")\nprint(f\"Answer: {response}\")"
+    },
+    {
+      "title": "\ud83d\udcc4 Expected Output",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# File: examples/citation_integration.py\nfrom shandu.agents.utils.citation_manager import CitationManager\nfrom shandu.agents.processors.content_processor import ContentProcessor\n\n# Initialize citation manager\nmanager = CitationManager()\n\n# Process content with citations\nprocessor = ContentProcessor()\nprocessed_content = processor.process_with_citations(\"AI in healthcare\", manager)\n\n# Export citations in APA format\nprint(manager.export_citations(\"apa\"))"
+    },
+    {
+      "title": "\ud83e\uddea Code Example",
+      "description": "Example demonstrating key functionality of the shandu library.",
+      "code": "# File: examples/end_to_end_report.py\nfrom shandu.research.researcher import Researcher\nfrom shandu.agents.processors.report_generator import ReportGenerator\n\n# Initialize researcher with full workflow\nresearcher = Researcher(\n    model=\"o3-mini-high\",\n    max_depth=3,\n    use_citations=True,\n    include_reflection=True\n)\n\n# Execute research and generate report\nresearch_result = researcher.research(\"AI applications in sustainable agriculture\")\n\n# Save and print final report\nReportGenerator.save_report(research_result, \"ai_sustainable_agriculture_report.md\")\nprint(\"Generated report saved to ai_sustainable_agriculture_report.md\")"
+    }
+  ],
+  "main_purpose": "# Overview of the Shandu Repository  \n\n## Purpose and Scope  \nThe project aims to provide an automated research and information-gathering system by combining web scraping, AI-powered search, and modular agent workflows. It focuses on generating structured reports, managing citations, and optimizing search queries through iterative refinement.  \n\n## Core Features  \n- **Web Scraping**: Extracts data from websites using the `scraper` module.  \n- **AI Search Integration**: Leverages AI models (e.g., Gemini, GPT-4, Mistral) for query generation and result refinement via the `search` and `ai_search` modules.  \n- **Agent-Based Workflows**: Implements modular agents (e.g., `langgraph_agent`, `agent_utils`) for task orchestration, including source selection, report generation, and reflection.  \n- **Citation Management**: Automates citation handling with `citation_manager`, `citation_registry`, and related utilities.  \n- **CLI Interface**: Offers command-line tools for user interaction through `cli.py`.  \n\n## Target Audience/Users  \n- Researchers requiring automated data collection and report generation.  \n- Developers integrating AI-driven search and scraping into applications.  \n- Users of large language models (LLMs) for query optimization and iterative research workflows.  \n\n## Main Technologies or Frameworks  \n- **Python** (primary language).  \n- **LangGraph** (for agent workflow orchestration in `langgraph_agent.py`).  \n- **LLM APIs** (Gemini, GPT-4, Mistral, etc., as shown in example files).  \n- **Modular Architecture** (separated into `scraper`, `search`, `agents`, and `utils` directories).  \n- **Logging Utilities** (custom logger in `utils/logger.py`).  \n\n*(Note: This summary is inferred from the project structure and file names, as direct access to README.md content was not provided.)*",
+  "use_cases": "",
+  "benchmark_table": [],
+  "architecture": "Architecture Overview  \n\nHigh-Level Description  \nThe repository is structured as a modular Python application focused on research automation, combining web scraping, search capabilities, and agent-based workflows. It emphasizes configuration, logging, and integration with external AI models. The system is designed to process information through a series of coordinated components, enabling tasks like query generation, source selection, and report creation.  \n\nMain Components and Roles  \n* **CLI (Command Line Interface)**: Provides a user-facing interface to execute research workflows, manage configurations, and interact with the system's core functionalities.  \n* **Config**: Centralizes configuration settings for the application, including API keys, model parameters, and workflow defaults.  \n* **Prompts**: Stores predefined prompt templates used by agents to generate queries, analyze content, and structure outputs.  \n* **Scraper**: Extracts data from web sources, handling tasks like HTML parsing and content retrieval for use in research workflows.  \n* **Search**: Implements traditional search logic (e.g., keyword-based) and AI-enhanced search (e.g., semantic or context-aware queries) to locate relevant information.  \n* **Researcher**: Coordinates the end-to-end research process, integrating scraping, search, and content processing to produce structured outputs.  \n* **Processors**: Specialized modules for tasks like report generation and content analysis, ensuring data is formatted and summarized effectively.  \n* **Agent Utils**: Provides helper functions for agent operations, such as input validation, state management, and utility tools for workflow execution.  \n* **Citation Manager**: Tracks and formats citations for sources used in research, ensuring proper attribution and reference handling.  \n* **Nodes**: Individual steps in the agent workflow (e.g., query generation, source selection, reflection), each performing a specific task in the research pipeline.  \n* **Graph Builder**: Constructs the workflow graph by connecting nodes, defining the sequence and logic of agent operations.  \n* **Graph Wrapper**: Manages the execution of the workflow graph, handling input routing, state transitions, and output aggregation.  \n* **Tests**: Contains unit and integration tests to validate the functionality of core components like report generation and citation management.  \n* **Examples**: Demonstrates usage patterns with different AI models (e.g., GPT-4, Gemini) to showcase integration flexibility and workflow customization.  \n\nData Flow  \n1. The CLI accepts user input and loads configurations from the Config module.  \n2. Prompts are retrieved and used by agents to generate initial queries or refine search terms.  \n3. The Researcher module triggers the workflow, which may involve:  \n   a. Nodes like `generate_queries.py` and `source_selection.py` to define search strategies.  \n   b. The Search module (traditional or AI-based) to fetch results from web sources.  \n   c. The Scraper to extract raw content from URLs identified during search.  \n4. Processors (e.g., `report_generator.py`) analyze and structure the scraped or searched data into final outputs.  \n5. Citation Manager and Citation Registry track sources, ensuring citations are added during report generation.  \n6. The Graph Builder and Wrapper orchestrate the sequence of nodes, passing data between them until the final report is produced.  \n\nExternal Dependencies and Integrations  \n- **LLM APIs**: Integrates with models like GPT-4, Gemini, and Mistral via examples and agent logic, suggesting reliance on OpenAI, Google, and Mistral AI services.  \n- **LangGraph**: Used in `langgraph_agent.py` and graph-related modules to manage stateful agent workflows.  \n- **Logging**: Leverages the `logger.py` utility for tracking operations and debugging.  \n- **Scraping Tools**: Likely depends on libraries like `requests` or `BeautifulSoup` for web scraping tasks.  \n- **Search Engines**: May interface with APIs like Google Search or Elasticsearch for traditional and AI-based search.  \n- **Python Packages**: Dependencies listed in `requirements.txt` and `MANIFEST.in` (e.g., for testing, packaging, or utility functions).",
+  "architectural_philosophy": "",
+  "numbered_concepts": [],
+  "architecture_sections": [],
+  "architecture_files": [],
+  "flow_diagrams": {
+    "architecture": {
+      "mermaid_code": "graph TD\n    A[CLI Interface] --> B[Researcher Module]\n    B --> C[Scraper Component]\n    B --> D[Search Component]\n    D --> E[AI Search Subsystem]\n    B --> F[LangGraph Agent]\n    F --> G[Query Generation Node]\n    F --> H[Citation Management]\n    C --> I[Web Scraping Logic]\n    D --> J[Search Algorithms]\n    E --> K[AI-Powered Search]\n    H --> L[Citation Registry]\n    H --> M[Citation Manager]\n    G --> N[Reflection Node]\n    classDef core fill:#f9f,stroke:#333;\n    classDef utilities fill:#bbf,stroke:#333;\n    class A,B,F core\n    class C,D,E,H,I,J,K,L,M,N utilities",
+      "description": "Here are three high-level architectural diagrams for the Shandu project using Mermaid syntax, based on the provided project structure:\n\n---\n\n### 1. **System Overview Diagram**",
+      "title": "Here are three high-level architectural diagrams for the Shandu project using Mermaid syntax, based on the provided project structure:"
+    },
+    "workflow": {
+      "mermaid_code": "flowchart LR\n    Start[Start CLI] --> Initialize{Initialize Researcher}\n    Initialize -->|Config| Config[Load config.py]\n    Initialize -->|Prompts| Prompts[Use prompts.py]\n    Config --> ResearchProcess[Research Process]\n    Prompts --> ResearchProcess\n    ResearchProcess --> Scrape[Scraper Execution]\n    ResearchProcess --> Search[Search Execution]\n    Search --> AISearch[AI Search (ai_search.py)]\n    AISearch --> GenerateQueries[Generate Queries]\n    GenerateQueries --> SourceSelection[Select Sources]\n    SourceSelection --> SearchNode[Perform Search]\n    SearchNode --> ManageCitations[Citation Management]\n    ManageCitations --> RegisterCitations[Citation Registry]\n    Search --> ProcessContent[Content Processing]\n    ProcessContent --> GenerateReport[Report Generation]\n    GenerateReport --> Output[Final Output]\n    classDef process fill:#cce7ff,stroke:#000;\n    classDef decision fill:#fff,stroke:#000;\n    class Start,Output process\n    class Initialize,ResearchProcess decision",
+      "description": "**Explanation**:  \nThis diagram shows the main architectural components of Shandu. The **CLI Interface** (cli.py) serves as the entry point, interacting with the **Researcher Module** (researcher.py). The Researcher coordinates with the **Scraper** (scraper.py) for data extraction and the **Search Component** (search.py) for information retrieval. The **AI Search Subsystem** (ai_search.py) enhances search capabilities, while the **LangGraph Agent** (langgraph_agent.py) manages complex workflows using nodes like **Query Generation** (generate_queries.py) and **Citation Management** (citation_manager.py). Utility modules like **Citation Registry** and **Search Algorithms** support core operations.\n\n---\n\n### 2. **Workflow Diagram**",
+      "title": "**Explanation**:"
+    },
+    "component_relationships": {
+      "mermaid_code": "graph TD\n    Researcher[shandu/research/researcher.py] -->|uses| Processor1[shandu/agents/processors/content_processor.py]\n    Researcher -->|uses| Processor2[shandu/agents/processors/report_generator.py]\n    LangGraphAgent[shandu/agents/langgraph_agent.py] -->|depends on| Nodes[shandu/agents/nodes]\n    Nodes --> Node1[shandu/agents/nodes/generate_queries.py]\n    Nodes --> Node2[shandu/agents/nodes/source_selection.py]\n    Nodes --> Node3[shandu/agents/nodes/report_generation.py]\n    Nodes --> Node4[shandu/agents/nodes/reflect.py]\n    LangGraphAgent -->|uses| Utils[shandu/agents/utils]\n    Utils --> Util1[shandu/agents/utils/agent_utils.py]\n    Utils --> Util2[shandu/agents/utils/citation_manager.py]\n    Utils --> Util3[shandu/agents/utils/citation_registry.py]\n    Search[shandu/search/search.py] -->|extends| AISearch[shandu/search/ai_search.py]\n    Search -->|uses| Scraper[shandu/scraper/scraper.py]\n    classDef modules fill:#ccf,stroke:#333;\n    classDef submodules fill:#ffc,stroke:#333;\n    class Researcher,Search,LangGraphAgent modules\n    class Processor1,Processor2,Nodes,Utils,submodules",
+      "description": "**Explanation**:  \nThis workflow outlines the end-to-end process of the Shandu system. The CLI initializes the **Researcher**, which loads configuration and prompts. The **Research Process** triggers **Scraper** and **Search** operations. The **AI Search** workflow generates queries, selects sources, performs searches, and manages citations via the **Citation Registry**. Content is processed by the **Content Processor** and compiled into a final report using the **Report Generator**. The diagram highlights the sequence of operations and key decision points.\n\n---\n\n### 3. **Detailed Component Relationship Diagram**",
+      "title": "**Explanation**:"
+    }
+  },
+  "component_table": [
+    {
+      "name": "Stateless",
+      "description": "Logger, search, scraper, and most utility modules (e.g., agent_utils.py)."
+    },
+    {
+      "name": "Stateful",
+      "description": "Langgraph agent and workflow nodes maintain internal state during execution to track progress and context."
+    },
+    {
+      "name": "**Project Infrastructure**",
+      "description": "| component name | description | file path(s) |\n|----------------------|-----------------------------------------------------------------------------|---------------------------------------|\n| requirements | manages dependencies for the project, ensuring all necessary libraries are installed. | requirements.txt |\n| packaging | defines packaging rules and metadata for distributing the project. | manifest.in, setup.py |\n| licensing | specifies the open-source license governing the project's usage and distribution. | license |\n| documentation | provides high-level project overview, usage instructions, and technical details. | readme.md (workspace and submodules) | ---"
+    },
+    {
+      "name": "**Data Acquisition Layer**",
+      "description": "| component name | description | file path(s) |\n|----------------------|-----------------------------------------------------------------------------|---------------------------------------|\n| scraper | extracts structured data from web sources, supporting research and search operations. | shandu/scraper/scraper.py |\n| search engine | performs traditional and ai-enhanced searches to retrieve relevant information. | shandu/search/search.py, shandu/search/ai_search.py | ---"
+    },
+    {
+      "name": "**Agent System Layer**",
+      "description": "| component name | description | file path(s) |\n|----------------------|-----------------------------------------------------------------------------|---------------------------------------|\n| agent base | provides a foundational class for defining agent behaviors and interactions. | shandu/agents/agent.py |\n| langgraph agent | implements a graph-based agent system for modular, stepwise task execution. | shandu/agents/langgraphmanager.py |\n| citation registry| tracks and organizes citations globally, ensuring consistency across reports. | shandu/agents/utils/citation_registry.py | ---"
+    },
+    {
+      "name": "**Design Patterns and Techniques**",
+      "description": "Modular architecture: components are decoupled (e.g., scraper, search, agents) to allow independent development and testing.strategy pattern: search implementations (search.py vs. aiselection.py, report_generation.py) form a stepwise processing chain. ---"
+    },
+    {
+      "name": "**State Analysis**",
+      "description": "Stateless: logger, search, scraper, and most utility modules (e.g., agent_utils.py).\nstateful: langgraph agent and workflow nodes maintain internal state during execution to track progress and context. ---"
+    }
+  ],
+  "components": {
+    "Stateless": {
+      "purpose": "Based on the project structure and naming conventions in the Shandu workspace, I'll provide comprehensive documentation for the **Stateless** component, which appears to be a core architectural pattern used in the agent system. While the component isn't explicitly named in the file tree, its implementation is evident in the `shandu/agents/langgraph_agent.py` and related modules.",
+      "usage": "Interaction**\nDevelopers interact with the stateless component by:\n- **Configuring the graph**: Using `builder.py` in `shandu/agents/graph` to define node dependencies.\n- **Passing input data**: Providing a `ResearchInput` object (likely a Pydantic model) to the agent.\n- **Retrieving results**: Capturing outputs from nodes via the `StatelessGraph` interface.",
+      "methods": [
+        "Scalability",
+        "Modularity",
+        "Immutability",
+        "LangGraphAgent",
+        "StatelessGraph",
+        "process_input(input_data)",
+        "clear_cache()",
+        "model_name",
+        "tool_registry",
+        "Overhead",
+        "Caching",
+        "Utilities",
+        "Reproducibility",
+        "Simplicity"
+      ],
+      "code_example": "from shandu.agents.langgraph_agent import LangGraphAgent\nfrom shandu.agents.nodes.initialize import InitializeNode\n\nagent = LangGraphAgent(graph_builder=InitializeNode())\nresult = agent.process_input(research_query=\"What caused the French Revolution?\")",
+      "methods_with_descriptions": [
+        {
+          "name": "Scalability",
+          "description": "Allowing parallel execution of tasks without shared state conflicts."
+        },
+        {
+          "name": "Modularity",
+          "description": "Enabling individual processing nodes (e.g., query generation, source selection) to operate independently."
+        },
+        {
+          "name": "Immutability",
+          "description": "Inputs and outputs are passed as immutable data structures (e.g., dictionaries, tuples)."
+        },
+        {
+          "name": "LangGraphAgent",
+          "description": "** (in `shandu/agents/langgraph_agent.py`):  \n  Manages the stateless graph execution lifecycle."
+        },
+        {
+          "name": "StatelessGraph",
+          "description": "** (in `shandu/agents/graph/wrapper.py`):  \n  Abstracts the LangGraph workflow as a stateless interface."
+        },
+        {
+          "name": "process_input(input_data)",
+          "description": "Executes the stateless graph with the provided input, returning final output."
+        },
+        {
+          "name": "clear_cache()",
+          "description": "Resets any transient state (e.g., cached results) to ensure true statelessness."
+        },
+        {
+          "name": "model_name",
+          "description": "(\"gpt-4o-mini\"):  \n  Specifies the LLM model used for stateless processing (e.g., Gemini, Mistral)."
+        },
+        {
+          "name": "tool_registry",
+          "description": "(default: `None`):  \n  A registry of tools (e.g., search APIs, citation managers) injected into nodes."
+        },
+        {
+          "name": "Overhead",
+          "description": "Repeated initialization of tools (e.g., LLM clients) may impact performance."
+        },
+        {
+          "name": "Caching",
+          "description": "Optional caching of node outputs (via `agent_utils.py`) to reduce redundant computations."
+        },
+        {
+          "name": "Utilities",
+          "description": "`shandu/agents/utils/agent_utils.py`  \n  `shandu/agents/utils/citation_manager.py`"
+        },
+        {
+          "name": "Reproducibility",
+          "description": "Same input always produces the same output."
+        },
+        {
+          "name": "Simplicity",
+          "description": "Easier to test and debug individual components (e.g., `test_citation_registry.py`)."
+        }
+      ],
+      "parameters": [],
+      "source_files": [
+        {
+          "file": "shandu/agents/langgraph_agent.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/langgraph_agent.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/graph/wrapper.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/graph/wrapper.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/graph/builder.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/graph/builder.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/nodes/generate_queries.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/generate_queries.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/nodes/source_selection.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/source_selection.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/nodes/report_generation.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/report_generation.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/nodes/search.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/search.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/utils/agent_utils.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/utils/agent_utils.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/utils/citation_manager.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/utils/citation_manager.py#L1-L50"
+        }
+      ]
+    },
+    "Stateful": {
+      "purpose": "The **Stateful** component in the Shandu project is a critical architectural element designed to manage and persist state across complex workflows, particularly in the context of research agents and multi-step operations. Below is a detailed breakdown of its design, implementation, and usage, contextualized within the provided project structure.",
+      "usage": "usage, contextualized within the provided project structure.",
+      "methods": [
+        "Serialization",
+        "ResearchState",
+        "StatefulAgent",
+        "initialize_state()",
+        "get_state()",
+        "load_state(file_path)",
+        "initial_query",
+        "persistence_enabled",
+        "version",
+        "Consistency",
+        "Resilience"
+      ],
+      "code_example": "state = ResearchState(initial_query=\"AI ethics\")\nsearch_node = SearchNode()\nsearch_node.execute(state)  # Updates state.sources\nprocessor = ContentProcessor()\nprocessor.process(state)    # Updates state.content",
+      "methods_with_descriptions": [
+        {
+          "name": "Serialization",
+          "description": "Uses JSON or pickle for state persistence (likely in `agent_utils.py` or `citation_manager.py`)."
+        },
+        {
+          "name": "ResearchState",
+          "description": "** (likely in `shandu/agents/nodes/initialize.py` or `agent_utils.py`):\n  - Manages the core state dictionary and provides access to subcomponents."
+        },
+        {
+          "name": "StatefulAgent",
+          "description": "** (in `shandu/agents/agent.py`):\n  - Wraps agent logic around a `ResearchState` instance."
+        },
+        {
+          "name": "initialize_state()",
+          "description": "Sets up the initial state with default values (e.g., empty sources, citations)."
+        },
+        {
+          "name": "get_state()",
+          "description": "Returns the current state or a specific subcomponent (e.g., `state.get_state(\"citations\")`)."
+        },
+        {
+          "name": "load_state(file_path)",
+          "description": "Deserializes a saved state into memory."
+        },
+        {
+          "name": "initial_query",
+          "description": "(str): The starting research question (default: `\"\"`)."
+        },
+        {
+          "name": "persistence_enabled",
+          "description": "(bool): Whether to save state to disk (default: `False`)."
+        },
+        {
+          "name": "version",
+          "description": "(str): Version of the state schema (default: `\"1.0\"`)."
+        },
+        {
+          "name": "Consistency",
+          "description": "All processors interact with a unified state interface."
+        },
+        {
+          "name": "Resilience",
+          "description": "Persistence allows workflows to survive interruptions, critical for long-running research tasks."
+        }
+      ],
+      "parameters": [],
+      "source_files": [
+        {
+          "file": "shandu/agents/agent.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/agent.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/nodes/initialize.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/initialize.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/utils/agent_utils.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/utils/agent_utils.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/processors/content_processor.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/processors/content_processor.py#L1-L50"
+        },
+        {
+          "file": "shandu/utils/logger.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/utils/logger.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/utils/citation_manager.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/utils/citation_manager.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/processors/report_generator.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/processors/report_generator.py#L1-L50"
+        }
+      ]
+    },
+    "**Project Infrastructure**": {
+      "purpose": "",
+      "usage": "Interaction**\nDevelopers interact with the infrastructure through:\n- **Configuration overrides**: Modify `config.py` or set environment variables (e.g., `SHANDU_LOG_LEVEL=DEBUG`).\n- **CLI commands**: Run `shandu` commands (e.g., `shandu search \"query\"` or `shandu generate-report`).\n- **Logging integration**: Use `utils.logger.get_logger()` to inject loggers into modules.\n- **Dependency management**: Update `requirements.txt` or `setup.py` for new dependencies.\n- **Testing**: Leverage `tests/` for unit/integration tests, mocking infrastructure components as needed.",
+      "methods": [
+        "Packaging",
+        "Testing",
+        "Config",
+        "Logger",
+        "main()",
+        "setup()",
+        "SHANDU_LOG_LEVEL",
+        "LLM_MODEL",
+        "MAX_SEARCH_RESULTS",
+        "SCRAPE_TIMEOUT",
+        "CITATION_REGISTRY_PATH",
+        "Configuration",
+        "CLI"
+      ],
+      "code_example": "# In a custom script\nfrom shandu.config import Config\nConfig.LLM_MODEL = \"gemini-flash2.5\"\nConfig.MAX_SEARCH_RESULTS = 20",
+      "methods_with_descriptions": [
+        {
+          "name": "Packaging",
+          "description": "`setup.py` defines the project\u2019s metadata and dependencies, while `MANIFEST.in` ensures non-Python files (e.g., example `.md` files) are included in distributions."
+        },
+        {
+          "name": "Testing",
+          "description": "Leverage `tests/` for unit/integration tests, mocking infrastructure components as needed."
+        },
+        {
+          "name": "Config",
+          "description": "class** (`shandu/config.py`):\n  - `get_api_key()`: Retrieves the API key for LLMs from environment variables or config.\n  - `set_log_level(level)`: Dynamically adjusts the logging level for the application."
+        },
+        {
+          "name": "Logger",
+          "description": "class** (`shandu/utils/logger.py`):\n  - `get_logger(name)`: Returns a configured logger instance for a given module.\n  - `setup_logger()`: Initializes the logging system with handlers and formatters."
+        },
+        {
+          "name": "main()",
+          "description": "function** (`shandu/cli.py`):\n  - `run_search()`: Entry point for executing search commands via CLI.\n  - `generate_report()`: CLI command to trigger report generation workflows."
+        },
+        {
+          "name": "setup()",
+          "description": "function** (`setup.py`):\n  - `find_packages()`: Automates package discovery for distribution.\n  - `install_requires()`: Lists dependencies for the project."
+        },
+        {
+          "name": "SHANDU_LOG_LEVEL",
+          "description": "** (`DEBUG`): Sets the logging verbosity (options: `DEBUG`, `INFO`, `WARNING`, `ERROR`, `CRITICAL`)."
+        },
+        {
+          "name": "LLM_MODEL",
+          "description": "** (`\"gpt-4o-mini\"`): Specifies the default LLM model for agents."
+        },
+        {
+          "name": "MAX_SEARCH_RESULTS",
+          "description": "** (`10`): Caps the number of search results retrieved per query."
+        },
+        {
+          "name": "SCRAPE_TIMEOUT",
+          "description": "** (`30`): Sets the timeout (in seconds) for web scraping requests."
+        },
+        {
+          "name": "CITATION_REGISTRY_PATH",
+          "description": "** (`\"./citations.json\"`): Defines the file path for storing citation metadata."
+        },
+        {
+          "name": "Configuration",
+          "description": "`shandu/config.py`"
+        },
+        {
+          "name": "CLI",
+          "description": "`shandu/cli.py`"
+        }
+      ],
+      "parameters": [
+        {
+          "name": "DEBUG",
+          "values": "Not specified",
+          "notes": ", `INFO`, `WARNING`, `ERROR`, `CRITICAL`)."
+        },
+        {
+          "name": "LLM_MODEL",
+          "values": "Not specified",
+          "notes": "** (`\"gpt-4o-mini\"`): Specifies the default LLM model for agents."
+        },
+        {
+          "name": "MAX_SEARCH_RESULTS",
+          "values": "Not specified",
+          "notes": "** (`10`): Caps the number of search results retrieved per query."
+        },
+        {
+          "name": "SCRAPE_TIMEOUT",
+          "values": "Not specified",
+          "notes": "** (`30`): Sets the timeout (in seconds) for web scraping requests."
+        }
+      ],
+      "source_files": [
+        {
+          "file": "setup.py",
+          "lines": "1-49",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/setup.py#L1-L49"
+        },
+        {
+          "file": "shandu/scraper/scraper.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/scraper/scraper.py#L1-L50"
+        },
+        {
+          "file": "shandu/search/ai_search.py",
+          "lines": "14-63",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/search/ai_search.py#L14-L63"
+        },
+        {
+          "file": "shandu/config.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/config.py#L1-L50"
+        },
+        {
+          "file": "shandu/utils/logger.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/utils/logger.py#L1-L50"
+        },
+        {
+          "file": "shandu/cli.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/cli.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/processors/content_processor.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/processors/content_processor.py#L1-L50"
+        }
+      ]
+    },
+    "**Data Acquisition Layer**": {
+      "purpose": "",
+      "usage": "usage, and implementation.",
+      "methods": [
+        "Scraper",
+        "HTMLParser",
+        "APIRequestHandler",
+        "url",
+        "headers",
+        "max_retries",
+        "cache_dir",
+        "Caching",
+        "Configuration"
+      ],
+      "code_example": "from shandu.scraper import Scraper  \nscraper = Scraper()  \ndata = scraper.fetch(\"https://example.com\", parser=\"beautifulsoup\")",
+      "methods_with_descriptions": [
+        {
+          "name": "Scraper",
+          "description": "Class**:  \n  - `fetch(url, parser=\"default\", headers=None, timeout=10, max_retries=3)`: Fetches a URL, applies the specified parser, and returns structured data.  \n  - `parse_html(html, parser_type=\"beautifulsoup\")`: Parses raw HTML using the configured parser.  \n  - `handle_errors(response)`: Validates the HTTP response and raises exceptions for errors (e.g., 4xx/5xx status codes).  \n  - `rotate_headers()`: Dynamically updates request headers to mimic different browsers."
+        },
+        {
+          "name": "HTMLParser",
+          "description": "Interface**:  \n  - `extract_content(html)`: Abstract method for extracting content from HTML. Implemented by parser-specific classes (e.g., `BeautifulSoupParser`)."
+        },
+        {
+          "name": "APIRequestHandler",
+          "description": "Class**:  \n  - `send_api_request(endpoint, params)`: Handles API calls with authentication and rate-limiting headers."
+        },
+        {
+          "name": "url",
+          "description": "(required): The target URL to scrape."
+        },
+        {
+          "name": "headers",
+          "description": "(default=None): Custom HTTP headers for the request."
+        },
+        {
+          "name": "max_retries",
+          "description": "(default=3): Number of retries for failed requests."
+        },
+        {
+          "name": "cache_dir",
+          "description": "(default=\"cache/\"): Directory to store cached responses for faster re-fetching."
+        },
+        {
+          "name": "Caching",
+          "description": "Stores responses in `cache_dir` to avoid redundant requests."
+        },
+        {
+          "name": "Configuration",
+          "description": "- `shandu/config.py` (for default headers, timeouts, etc.)."
+        }
+      ],
+      "parameters": [],
+      "source_files": [
+        {
+          "file": "shandu/config.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/config.py#L1-L50"
+        },
+        {
+          "file": "shandu/utils/logger.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/utils/logger.py#L1-L50"
+        },
+        {
+          "file": "shandu/scraper/scraper.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/scraper/scraper.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/nodes/search.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/search.py#L1-L50"
+        },
+        {
+          "file": "tests/test_report_generator.py",
+          "lines": "7-56",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/tests/test_report_generator.py#L7-L56"
+        }
+      ]
+    },
+    "**Agent System Layer**": {
+      "purpose": "",
+      "usage": "usage.",
+      "methods": [
+        "Configuration",
+        "Testing",
+        "Classes",
+        "Researcher",
+        "Node",
+        "model_name",
+        "search_depth",
+        "enable_reflection",
+        "Utilities"
+      ],
+      "code_example": "from shandu.agents.langgraph_agent import LangGraphAgent\n\nagent = LangGraphAgent(model_name=\"gpt-4o-mini\", max_iterations=3)\nresult = agent.run(\"What are the latest advancements in renewable energy?\")\nprint(result[\"report\"])",
+      "methods_with_descriptions": [
+        {
+          "name": "Configuration",
+          "description": "Define agent behavior in `shandu/config.py` (e.g., model choices, search depth)."
+        },
+        {
+          "name": "Testing",
+          "description": "Validate agent behavior using test cases in `tests/test_report_generator.py` and `tests/test_citation_registry.py`."
+        },
+        {
+          "name": "Classes",
+          "description": "- `Agent` (base class in `shandu/agents/agent.py`): Abstracts the agent lifecycle and provides hooks for customization."
+        },
+        {
+          "name": "Researcher",
+          "description": "(in `shandu/research/researcher.py`): Coordinates the execution of the agent graph."
+        },
+        {
+          "name": "Node",
+          "description": "(abstract base class for all nodes in `shandu/agents/nodes`): Defines the `execute()` method for task-specific logic."
+        },
+        {
+          "name": "model_name",
+          "description": "(\"gpt-4o-mini\"): Specifies the LLM used for query generation, reflection, and report writing."
+        },
+        {
+          "name": "search_depth",
+          "description": "(3): Controls how many sources are retrieved per search step."
+        },
+        {
+          "name": "enable_reflection",
+          "description": "(True): Enables the reflection node to refine search strategies iteratively."
+        },
+        {
+          "name": "Utilities",
+          "description": "- `shandu/agents/utils/agent_utils.py`  \n  - `shandu/agents/utils/citation_manager.py`"
+        }
+      ],
+      "parameters": [],
+      "source_files": [
+        {
+          "file": "shandu/agents/langgraph_agent.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/langgraph_agent.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/graph/builder.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/graph/builder.py#L1-L50"
+        },
+        {
+          "file": "shandu/config.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/config.py#L1-L50"
+        },
+        {
+          "file": "shandu/cli.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/cli.py#L1-L50"
+        },
+        {
+          "file": "tests/test_report_generator.py",
+          "lines": "7-56",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/tests/test_report_generator.py#L7-L56"
+        },
+        {
+          "file": "tests/test_citation_registry.py",
+          "lines": "4-53",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/tests/test_citation_registry.py#L4-L53"
+        },
+        {
+          "file": "shandu/agents/agent.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/agent.py#L1-L50"
+        },
+        {
+          "file": "shandu/research/researcher.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/research/researcher.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/processors/report_generator.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/processors/report_generator.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/utils/citation_manager.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/utils/citation_manager.py#L1-L50"
+        }
+      ]
+    },
+    "**Design Patterns and Techniques**": {
+      "purpose": "",
+      "usage": "interactions, and extensible processing logic. Below is a detailed breakdown:",
+      "methods": [
+        "Extensibility",
+        "Testing",
+        "Classes",
+        "Methods",
+        "Interfaces",
+        "search_engine",
+        "citation_style",
+        "log_level",
+        "Caching",
+        "Nodes"
+      ],
+      "code_example": "from shandu.agents.graph.builder import GraphBuilder\nfrom shandu.agents.nodes.initialize import InitializeNode\nfrom shandu.agents.nodes.search import SearchNode\n\nbuilder = GraphBuilder()\nbuilder.add_node(InitializeNode())\nbuilder.add_node(SearchNode(search_engine=\"ai_search\"))\nworkflow = builder.build()",
+      "methods_with_descriptions": [
+        {
+          "name": "Extensibility",
+          "description": "Supporting new agent types or processing steps without modifying existing code (Open/Closed Principle)."
+        },
+        {
+          "name": "Testing",
+          "description": "Writing unit tests in `tests/` (e.g., `test_citation_registry.py`) to validate node behavior."
+        },
+        {
+          "name": "Classes",
+          "description": "- `GraphBuilder`: Constructs and validates agent workflows.  \n  - `BaseNode`: Abstract base class for all workflow nodes.  \n  - `CitationManager`: Manages citations and source tracking.  \n  - `ReportGenerator`: Generates structured reports from processed data."
+        },
+        {
+          "name": "Methods",
+          "description": "- `GraphBuilder.add_node(node)`: Registers a node in the workflow.  \n  - `BaseNode.execute(context)`: Abstract method defining the node's processing logic.  \n  - `CitationManager.register_source(source)`: Tracks a source for citation.  \n  - `ReportGenerator.compile(data)`: Aggregates data into a final report."
+        },
+        {
+          "name": "Interfaces",
+          "description": "- `NodeInterface`: Ensures all nodes implement `execute()` and `validate()`.  \n  - `SearchStrategy`: Abstract interface for search implementations (used in `search.py` and `ai_search.py`)."
+        },
+        {
+          "name": "search_engine",
+          "description": "(\"default\"): Specifies the search strategy (e.g., \"ai_search\", \"traditional\")."
+        },
+        {
+          "name": "citation_style",
+          "description": "(\"APA\"): Determines formatting rules for citations."
+        },
+        {
+          "name": "log_level",
+          "description": "(\"INFO\"): Sets verbosity for logging (via `shandu/utils/logger.py`)."
+        },
+        {
+          "name": "Caching",
+          "description": "`SearchNode` caches results to avoid redundant queries (configurable via `cache_ttl` in `config.py`)."
+        },
+        {
+          "name": "Nodes",
+          "description": "- `shandu/agents/nodes/generate_queries.py`  \n  - `shandu/agents/nodes/report_generation.py`  \n  - `shandu/agents/nodes/search.py`"
+        }
+      ],
+      "parameters": [],
+      "source_files": [
+        {
+          "file": "shandu/agents/graph/builder.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/graph/builder.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/graph/wrapper.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/graph/wrapper.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/agent.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/agent.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/langgraph_agent.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/langgraph_agent.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/utils/citation_manager.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/utils/citation_manager.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/processors/report_generator.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/processors/report_generator.py#L1-L50"
+        },
+        {
+          "file": "shandu/utils/logger.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/utils/logger.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/nodes/generate_queries.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/generate_queries.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/nodes/report_generation.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/report_generation.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/nodes/search.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/search.py#L1-L50"
+        }
+      ]
+    },
+    "**State Analysis**": {
+      "purpose": "",
+      "usage": "Interaction**  \nDevelopers interact with the State Analysis component by:  \n- **Initializing the state** with required parameters (e.g., research topic, max depth).  \n- **Accessing state attributes** in nodes (e.g., `state.topic`, `state.citations`).  \n- **Defining state transitions** in node logic (e.g., updating `state.progress` after a search).  \n- **Extending the state class** to add new attributes for custom workflows.",
+      "methods": [
+        "Techniques",
+        "Caching",
+        "ResearchState",
+        "LangGraphAgent",
+        "StateValidator",
+        "topic",
+        "logger",
+        "cache_size"
+      ],
+      "code_example": "from shandu.agents.nodes.initialize import ResearchState\nstate = ResearchState(topic=\"Climate Change\", max_depth=3)",
+      "methods_with_descriptions": [
+        {
+          "name": "Techniques",
+          "description": "- **Immutable State Updates**: State is updated via immutable transformations to avoid side effects.  \n  - **Event-Driven Architecture**: Nodes trigger state changes through events (e.g., \"search_complete\", \"report_generated\").  \n  - **Dependency Injection**: The state is injected into nodes (e.g., `search.py`, `source_selection.py`) to decouple logic."
+        },
+        {
+          "name": "Caching",
+          "description": "for frequently accessed state data (e.g., citations, intermediate results)."
+        },
+        {
+          "name": "ResearchState",
+          "description": "Class**:  \n  - `__init__(topic, max_depth, logger=None)`: Initializes the state with a research topic, depth limit, and optional logger.  \n  - `update_citations(new_citations)`: Merges new citations into the state.  \n  - `get_progress()`: Returns the current progress percentage.  \n  - `reset()`: Resets the state for a new research task."
+        },
+        {
+          "name": "LangGraphAgent",
+          "description": "Class (in `langgraph_agent.py`)**:  \n  - `set_state(state)`: Injects a custom state into the agent.  \n  - `get_current_state()`: Retrieves the latest state for inspection or debugging."
+        },
+        {
+          "name": "StateValidator",
+          "description": "Interface (in `agent_utils.py`)**:  \n  - `validate(state)`: Ensures the state meets constraints (e.g., depth limit not exceeded)."
+        },
+        {
+          "name": "topic",
+          "description": "(str): The research topic to analyze."
+        },
+        {
+          "name": "logger",
+          "description": "(Logger, default=None): Optional logger for state changes."
+        },
+        {
+          "name": "cache_size",
+          "description": "(int, default=100): Maximum number of cached results for performance."
+        }
+      ],
+      "parameters": [],
+      "source_files": [
+        {
+          "file": "shandu/agents/langgraph_agent.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/langgraph_agent.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/nodes/initialize.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/initialize.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/utils/agent_utils.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/utils/agent_utils.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/nodes/search.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/search.py#L1-L50"
+        },
+        {
+          "file": "shandu/agents/nodes/report_generation.py",
+          "lines": "1-50",
+          "github_url": "https://github.com/SerendipitySTAR/shandu/blob/main/shandu/agents/nodes/report_generation.py#L1-L50"
+        }
+      ]
+    }
+  },
+  "getting_started": "",
+  "basic_example": "from shandu.research.researcher import Researcher\nfrom shandu.agents.langgraph_agent import LangGraphAgent\n\n# Initialize agent with model from examples\nagent = LangGraphAgent(model_config=\"examples/gpt4.0-mini.md\")\n\n# Create researcher and execute query\nresearcher = Researcher(agent=agent)\nresult = researcher.search(\"Explain the theory of relativity\")\nprint(result.summary)",
+  "usage_features": [],
+  "advanced_usage": "\n\n# Shandu Repository Usage Guide\n\nThis guide provides practical instructions for using the Shandu research system, covering basic to advanced workflows. The system is designed for AI-powered research tasks with modular components for search, processing, and reporting.\n\n---\n\n## 1. Getting Started with Basic Examples\n\n### Installation\n```bash\n# Navigate to workspace\ncd /media/sc/data/sc/openwiki/output/shandu\n\n# Install dependencies\npip install -r requirements.txt\n```\n\n### Basic CLI Usage\n```bash\n# Run a search using the default agent\npython -m shandu.cli --config examples/gemini-flash2.5.md \"What are the latest advancements in quantum computing?\"\n\n# Generate a report using a specific model\npython -m shandu.cli --config examples/mistral_large.md --query \"History of the Roman Empire\" --output reports/roman_history.md\n```\n\n---\n\n## 2. Initialization and Configuration\n\n### Configuration File\nModify `shandu/config.py` to set global parameters:\n```python\n# Example configuration\nDEFAULT_MODEL = \"gemini-flash2.5\"\nMAX_SEARCH_RESULTS = 10\nLOG_LEVEL = \"INFO\"\n```\n\n### Environment Variables\n```bash\n# Set API keys for models\nexport GEMINI_API_KEY=\"your-gemini-key\"\nexport MISTRAL_API_KEY=\"your-mistral-key\"\n```\n\n---\n\n## 3. Common Usage Patterns\n\n### Example 1: Basic Research Agent\n```python\nfrom shandu.research.researcher import Researcher\nfrom shandu.agents.langgraph_agent import LangGraphAgent\n\n# Initialize agent with model from examples\nagent = LangGraphAgent(model_config=\"examples/gpt4.0-mini.md\")\n\n# Create researcher and execute query\nresearcher = Researcher(agent=agent)\nresult = researcher.search(\"Explain the theory of relativity\")\nprint(result.summary)\n```\n\n### Example 2: Report Generation\n```python\nfrom shandu.agents.processors.report_generator import ReportGenerator\n\n# Generate structured report\ngenerator = ReportGenerator(output_dir=\"reports\")\nreport = generator.create_report(\n    query=\"AI ethics frameworks\",\n    sources=[\"https://example.com/ai-ethics1\", \"https://example.com/ai-ethics2\"],\n    format=\"markdown\"\n)\nprint(f\"Report saved to: {report.file_path}\")\n```\n\n### Example 3: Citation Management\n```python\nfrom shandu.agents.utils.citation_manager import CitationManager\n\n# Add and format citations\nmanager = CitationManager()\nmanager.add_source(\"https://example.com/quantum-paper\", \"Quantum Computing Journal\", 2023)\nmanager.add_source(\"https://example.com/ai-framework\", \"AI Ethics Institute\", 2022)\n\nformatted_citations = manager.format_citations(style=\"APA\")\nprint(formatted_citations)\n```\n\n---\n\n## 4. Advanced Usage Scenarios\n\n### Custom Graph Workflow\n```python\nfrom shandu.agents.graph.builder import GraphBuilder\nfrom shandu.agents.nodes import generate_queries, source_selection, report_generation\n\n# Build custom research graph\nbuilder = GraphBuilder()\nbuilder.add_node(\"query_gen\", generate_queries.generate_research_queries)\nbuilder.add_node(\"select_sources\", source_selection.select_top_sources)\nbuilder.add_node(\"gen_report\", report_generation.generate_full_report)\n\n# Connect nodes with specific parameters\nbuilder.connect(\"query_gen\", \"select_sources\", max_sources=5)\nbuilder.connect(\"select_sources\", \"gen_report\", citation_style=\"MLA\")\n\n# Execute workflow\nworkflow = builder.build()\nresult = workflow.run(\"What caused the fall of the Roman Empire?\")\n```\n\n### Multi-Agent Collaboration\n```python\nfrom shandu.agents.agent import BaseAgent\nfrom shandu.agents.langgraph_agent import LangGraphAgent\n\n# Initialize agents with different models\nagent1 = LangGraphAgent(model_config=\"examples/gemini.md\")\nagent2 = BaseAgent(model=\"o3-mini-high\", config_path=\"examples/o3-mini-high.md\")\n\n# Chain agents for complex tasks\nfrom shandu.agents.utils.agent_utils import chain_agents\nchained_agent = chain_agents([agent1, agent2])\n\nresult = chained_agent.execute(\"Compare machine learning approaches in medical diagnosis\")\nprint(result.final_answer)\n```\n\n---\n\n## 5. Performance Optimization Tips\n\n1. **Search Optimization**:\n   - Use `shandu.search.ai_search` for focused queries\n   - Set `MAX_SEARCH_RESULTS` in `config.py` to 5-10 for most tasks\n\n2. **Caching**:\n   ```python\n   from shandu.utils.logger import setup_cache\n   setup_cache(cache_dir=\"cache\", max_size=100)\n   ```\n\n3. **Parallel Processing**:\n   ```python\n   from shandu.agents.nodes.search import parallel_search\n   results = parallel_search(queries=[\"AI ethics\", \"Quantum computing\"], max_workers=4)\n   ```\n\n4. **Model Selection**:\n   - Use `gemini-flash2.5` for cost-sensitive tasks\n   - Use `mistral_large` for high-accuracy requirements\n\n---\n\n## 6. Best Practices\n\n1. **Configuration Management**:\n   - Store model-specific configurations in `examples/` directory\n   - Use environment variables for API keys (never commit them)\n\n2. **Logging**:\n   ```python\n   from shandu.utils.logger import get_logger\n   logger = get_logger(__name__)\n   logger.info(\"Starting research workflow\", extra={\"query\": \"AI ethics\"})\n   ```\n\n3. **Citation Workflow**:\n   - Always use `CitationManager` for source tracking\n   - Register citations in `shandu/agents/utils/citation_registry.py`\n\n4. **Testing**:\n   - Run unit tests with: `python -m pytest tests/`\n   - Test report generation: `python tests/test_report_generator.py`\n\n---\n\n## 7. Key File Paths and Imports\n\n| Component          | File Path                          | Key Import                                      |\n|--------------------|------------------------------------|-------------------------------------------------|\n| Core Configuration | `shandu/config.py`                 | `from shandu import config`                     |\n| CLI Interface      | `shandu/cli.py`                    | `from shandu import cli`                        |\n| Web Scraper        | `shandu/scraper/scraper.py`        | `from shandu.scraper import scraper`            |\n| Search Engine      | `shandu/search/ai_search.py`       | `from shandu.search import ai_search`           |\n| Report Generation  | `shandu/agents/processors/report_generator.py` | `from shandu.agents.processors import report_generator` |\n| Citation System    | `shandu/agents/utils/citation_manager.py` | `from shandu.agents.utils import citation_manager` |\n\n---\n\n## Code Examples for Different Use Cases\n\n### Academic Research Workflow\n```python\nfrom shandu.research.researcher import Researcher\nresearcher = Researcher(model=\"gpt4.0-mini\", search_depth=3)\nresult = researcher.expanded_search(\"CRISPR gene editing breakthroughs\")\nresult.save_to_file(\"crispr_research.md\", citations=True)\n```\n\n### Technical Documentation Analysis\n```python\nfrom shandu.agents.nodes.source_selection import select_technical_sources\nsources = select_technical_sources(\n    query=\"Python async programming\",\n    source_types=[\"github\", \"developer_portal\"],\n    max_sources=3\n)\nprint([s.url for s in sources])\n```\n\n### Multi-Step Research Pipeline\n```python\nfrom shandu.agents.graph.wrapper import GraphWrapper\n\n# Initialize with pre-defined graph\npipeline = GraphWrapper(graph_config=\"examples/advanced_pipeline.md\")\n\n# Execute with reflection node\nresult = pipeline.run(\"Evaluate renewable energy storage solutions\", enable_reflection=True)\nprint(result.reflection_summary)\n```\n\n### Custom Node Integration\n```python\nfrom shandu.agents.nodes import NodeBase\nfrom shandu.agents.graph.builder import GraphBuilder\n\nclass DataValidator(NodeBase):\n    def process(self, data):\n        return {\"validated_data\": data, \"valid\": True}\n\nbuilder = GraphBuilder()\nbuilder.add_node(\"validator\", DataValidator())\nworkflow = builder.build()\nresult = workflow.run(\"Validate climate change data\", nodes=[\"validator\"])\n```\n\n---\n\n## Troubleshooting and Debugging\n\n1. **Check Logs**:\n   - Debug logs are stored in `logs/debug.log`\n   - Use `shandu/utils/logger.py` to adjust verbosity\n\n2. **Test Configurations**:\n   - Validate model configs with: `python examples/gpt4.0-mini.md --test`\n\n3. **Memory Management**:\n   - For large tasks, set `config.MAX_CONTEXT_LENGTH = 32768` in `config.py`\n\n---\n\nThis guide demonstrates the core capabilities of the Shandu system. For specific model configurations, refer to the example files in the `examples/` directory. Always use the `CitationManager` for academic integrity and consider the `parallel_search` function for large-scale research tasks.",
+  "installation": "# Shandu Repository Installation & Setup Guide\n\n## Prerequisites and Dependencies\n### Required Software\n- **Python 3.8+** (Verify with `python --version` or `python3 --version`)\n- **pip** (Python package installer, typically included with Python)\n- **Virtual environment** (Recommended for development: `python -m venv venv`)\n\n### Required Accounts/Services\n- **API Keys** (If using AI search features in `shandu/search/ai_search.py`, ensure you have access to the required LLM APIs like Gemini, GPT-4, Mistral, etc.)\n- **Internet access** (For downloading dependencies)\n\n### Dependencies\n- **Core dependencies** listed in `requirements.txt` (located at the root of the workspace).\n- **Development dependencies** (e.g., `pytest`, `pytest-cov`) may need to be installed separately if testing is required.\n\n---\n\n## Step-by-Step Installation Process\n\n### **For Development Environment**\n1. Clone the repository to your local machine.\n2. Navigate to the root directory:\n   \n   cd /media/sc/data/sc/openwiki/output/shandu\n   \n3. Create a virtual environment:\n   \n   python -m venv venv\n   source venv/bin/activate  # Linux/macOS\n   venv\\Scripts\\activate     # Windows\n   \n4. Install dependencies:\n   \n   pip install -r requirements.txt\n   \n5. Install the package in editable mode for development:\n   \n   pip install -e .\n   \n6. (Optional) Install testing tools:\n   \n   pip install pytest pytest-cov\n   \n\n### **For Production Environment**\n1. Navigate to the root directory:\n   \n   cd /media/sc/data/sc/openwiki/output/shandu\n   \n2. Install dependencies:\n   \n   pip install -r requirements.txt\n   \n3. Install the package:\n   \n   pip install .\n   \n\n---\n\n## Configuration Options and Environment Variables\n\n### **Environment Variables**\n- **`SHANDU_LOG_LEVEL`**: Set logging verbosity (e.g., `DEBUG`, `INFO`).  \n  Example:\n  \n  export SHANDU_LOG_LEVEL=DEBUG  # Linux/macOS\n  set SHANDU_LOG_LEVEL=DEBUG     # Windows\n  \n- **`SHANDU_API_KEY`**: Required for AI search features. Replace with your actual API key:\n  \n  export SHANDU_API_KEY=your_api_key_here\n  \n\n### **Configuration Files**\n- Modify `shandu/config.py` to adjust default settings (e.g., search engine parameters, output directories).\n- Example: Update the `MAX_SEARCH_RESULTS` variable in `config.py` to control the number of search results fetched.\n\n---\n\n## Verify Installation Success\n\n### **Run CLI Command**\nUse the `cli.py` script to test basic functionality:\n\npython shandu/cli.py --help\n\nExpected output: A list of available CLI commands (e.g., `search`, `scrape`, `generate-report`).\n\n### **Run Unit Tests**\nExecute tests in the `tests/` directory:\n\npytest tests/\n\nEnsure all tests pass without errors.\n\n### **Test AI Search**\nRun a sample AI search using the `ai_search.py` module:\n\npython -c \"from shandu.search.ai_search import AIAgent; AIAgent().search('test query')\"\n\nVerify that results are returned and no API key errors occur.\n\n---\n\n## Common Installation Problems & Solutions\n\n### **Problem 1: Missing Dependencies**\n- **Symptom**: `ModuleNotFoundError` for packages like `langgraph` or `requests`.\n- **Solution**: Ensure all dependencies are installed:\n  \n  pip install -r requirements.txt\n  \n\n### **Problem 2: API Key Not Set**\n- **Symptom**: Errors in `shandu/search/ai_search.py` related to missing API keys.\n- **Solution**: Set the `SHANDU_API_KEY` environment variable as described in Section 3.\n\n### **Problem 3: Permission Issues**\n- **Symptom**: `Permission denied` when installing globally.\n- **Solution**: Use a virtual environment or install locally:\n  \n  pip install --user .\n  \n\n### **Problem 4: Logging Not Working**\n- **Symptom**: No logs appear during execution.\n- **Solution**: Set the `SHANDU_LOG_LEVEL` environment variable and verify `shandu/utils/logger.py` is configured correctly.\n\n---\n\n## Setup Files Reference\n\n### **Key Files**\n- **`requirements.txt`**: Root directory (`/media/sc/data/sc/openwiki/output/shandu/requirements.txt`)\n- **`setup.py`**: Root directory (used for packaging and installation).\n- **`MANIFEST.in`**: Root directory (specifies additional files to include in the package).\n- **`shandu/config.py`**: Central configuration file for the project.\n- **`shandu/agents/utils/citation_registry.py`**: Manages citation configurations (modify if needed).\n\n---\n\n## Installation Methods Comparison\n\n| Method                          | Benefits                                  | Drawbacks                                  |\n|---------------------------------|-------------------------------------------|--------------------------------------------|\n| **Editable Mode (`pip -e .`)**   | Allows real-time code changes for development | Not recommended for production              |\n| **Standard Install (`pip .`)**   | Clean, isolated installation for production | Changes to source code require reinstallation |\n| **Manual Setup (`setup.py`)**    | Full control over installation process     | More error-prone and time-consuming          |\n\n---\n\n## OS-Specific Notes\n\n### **Linux/macOS**\n- Use `source venv/bin/activate` to activate the virtual environment.\n- Ensure proper permissions for script execution if needed.\n\n### **Windows**\n- Use `venv\\Scripts\\activate` to activate the virtual environment.\n- Avoid using backslashes in file paths (use forward slashes or raw strings).\n\n---\n\nBy following these steps, you should have a fully functional Shandu environment. For advanced configurations, refer to the `examples/` directory for sample workflows (e.g., `gemini.md`, `gpt4.0-mini.md`).",
+  "parameters": [
+    {
+      "name": "data",
+      "values": "Required",
+      "notes": "Required parameter for function process"
+    }
+  ],
+  "generated_at": "2025-05-22 16:20:38",
+  "generation_time_seconds": 2266.487991333008
+}

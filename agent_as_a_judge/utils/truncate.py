@@ -10,19 +10,22 @@ load_dotenv()
 def truncate_string(
     info_string: Union[str, None],
     model: str = os.getenv("DEFAULT_LLM"),
-    max_tokens: int = 10000,
+    max_tokens: int = 32768,
     drop_mode="middle",
 ) -> str:
 
+    # 如果info_string为None，则返回空字符串
     if info_string is None:
         logging.warning(
             "Received None input for truncation. Returning an empty string."
         )
         return ""
 
+    # 将info_string转换为字符串类型
     info_string = str(info_string)
     
     try:
+        # 根据模型获取编码
         encoding = tiktoken.encoding_for_model(model)
     except KeyError:
         # Fallback to cl100k_base (used by gpt-4) if model not found
