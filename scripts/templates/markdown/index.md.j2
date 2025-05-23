@@ -1,0 +1,261 @@
+{# Main Documentation Template for {{ documentation.repo_name }} #}
+# {{ documentation.repo_name }} Documentation
+
+Generated at: {{ generated_at }}
+
+---
+
+## Overview
+
+{{ documentation.main_purpose | default("No main purpose specified.") }}
+
+{% if documentation.use_cases %}
+### Use Cases
+{{ documentation.use_cases }}
+{% endif %}
+
+{% if documentation.benchmark_table %}
+### Benchmarks
+| Benchmark/Task | Description | Agent Types/Configuration |
+|----------------|-------------|---------------------------|
+{% for benchmark in documentation.benchmark_table %}
+| {{ benchmark.benchmark }} | {{ benchmark.description }} | {{ benchmark.agent_types }} |
+{% endfor %}
+{% endif %}
+
+---
+
+## Architecture
+
+{{ documentation.architecture | default("No architecture overview provided.") }}
+
+{% if documentation.architectural_philosophy %}
+### Architectural Philosophy & Design Principles
+{{ documentation.architectural_philosophy }}
+{% endif %}
+
+{% if documentation.numbered_concepts %}
+### Key Architectural Concepts
+{% for concept in documentation.numbered_concepts %}
+- **{{ concept.title }}**: {{ concept.description }}
+{% endfor %}
+{% endif %}
+
+{% if documentation.architecture_sections %}
+### Architecture Sections
+{% for section in documentation.architecture_sections %}
+#### {{ section.title }}
+{{ section.content }}
+{% endfor %}
+{% endif %}
+
+{% if documentation.flow_diagrams %}
+{% if documentation.flow_diagrams.architecture and documentation.flow_diagrams.architecture.mermaid_code %}
+### System Architecture Diagram
+```mermaid
+{{ documentation.flow_diagrams.architecture.mermaid_code | safe }}
+```
+{% if documentation.flow_diagrams.architecture.description %}
+*Description: {{ documentation.flow_diagrams.architecture.description }}*
+{% endif %}
+{% endif %}
+
+{% if documentation.flow_diagrams.workflow and documentation.flow_diagrams.workflow.mermaid_code %}
+### Workflow Diagram
+```mermaid
+{{ documentation.flow_diagrams.workflow.mermaid_code | safe }}
+```
+{% if documentation.flow_diagrams.workflow.description %}
+*Description: {{ documentation.flow_diagrams.workflow.description }}*
+{% endif %}
+{% endif %}
+
+{% if documentation.flow_diagrams.component_relationships and documentation.flow_diagrams.component_relationships.mermaid_code %}
+### Component Relationship Diagram
+```mermaid
+{{ documentation.flow_diagrams.component_relationships.mermaid_code | safe }}
+```
+{% if documentation.flow_diagrams.component_relationships.description %}
+*Description: {{ documentation.flow_diagrams.component_relationships.description }}*
+{% endif %}
+{% endif %}
+{% endif %}
+
+{% if documentation.architecture_files %}
+### Relevant Architecture Files
+{% for file_path in documentation.architecture_files %}
+- `{{ file_path }}`
+{% endfor %}
+{% endif %}
+
+---
+
+## Core Components
+{% if documentation.component_table %}
+### Components Overview
+| Component/Parameter | Description |
+|---------------------|-------------|
+{% for item in documentation.component_table %}
+| `{{ item.name }}`      | {{ item.description | default('N/A') }} |
+{% endfor %}
+{% endif %}
+
+{% if documentation.components %}
+{% for component_name, component_data in documentation.components.items() %}
+### Component: {{ component_name }}
+
+**Purpose:** 
+{{ component_data.purpose | default('Not specified.') }}
+
+{% if component_data.usage %}
+**Usage:** 
+{{ component_data.usage }}
+{% endif %}
+
+{% if component_data.methods_with_descriptions %}
+**Key Methods:**
+{% for method in component_data.methods_with_descriptions %}
+- `{{ method.name }}`: {{ method.description | default('No description provided.') }}
+{% endfor %}
+{% endif %}
+
+{% if component_data.parameters %}
+**Parameters:**
+| Parameter   | Default Value / Values | Notes |
+|-------------|------------------------|-------|
+{% for param in component_data.parameters %}
+| `{{ param.name }}` | `{{ param.values | default('N/A') }}` | {{ param.notes | default('N/A') }} |
+{% endfor %}
+{% endif %}
+
+{% if component_data.code_example %}
+**Example:**
+```python
+{{ component_data.code_example }}
+```
+{% endif %}
+
+{% if component_data.source_files %}
+**Source Files:**
+{% for source_file_info in component_data.source_files %}
+- `{{ source_file_info.file }}`{% if source_file_info.lines %} (Lines: {{ source_file_info.lines }}){% endif %}
+{% endfor %}
+{% endif %}
+
+---
+{% endfor %}
+{% else %}
+No detailed component information available.
+{% endif %}
+
+---
+
+## Usage Guide
+
+{% if documentation.getting_started %}
+### Getting Started
+{{ documentation.getting_started }}
+{% endif %}
+
+{% if documentation.basic_example %}
+**Basic Example:**
+```python
+{{ documentation.basic_example }}
+```
+{% endif %}
+
+{% if documentation.advanced_usage %}
+### Advanced Usage
+{{ documentation.advanced_usage }}
+{% endif %}
+
+{% if documentation.usage_features %}
+**Key Usage Features:**
+{% for feature in documentation.usage_features %}
+- {{ feature }}
+{% endfor %}
+{% endif %}
+
+---
+
+## Installation and Setup
+
+{% if documentation.installation %}
+{{ documentation.installation }}
+{% else %}
+No installation details provided.
+{% endif %}
+
+{% if documentation.parameters %}
+### Global Parameters/Configuration
+| Parameter Name | Typical Values / Default | Notes |
+|----------------|--------------------------|-------|
+{% for param in documentation.parameters %}
+| `{{ param.name }}` | `{{ param.values | default('N/A') }}` | {{ param.notes | default('N/A') }} |
+{% endfor %}
+{% endif %}
+
+---
+
+{% if documentation.advanced_topics %}
+## Advanced Topics
+{{ documentation.advanced_topics }}
+
+{% if documentation.advanced_topics_sections %}
+{% for section in documentation.advanced_topics_sections %}
+### {{ section.title }}
+{{ section.content }}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+---
+
+{% if documentation.examples or documentation.code_examples %}
+## Examples & Tutorials
+{% if documentation.examples %}
+{{ documentation.examples }}
+{% endif %}
+
+{% if documentation.code_examples %}
+{% for example in documentation.code_examples %}
+### {{ example.title | default('Example') }}
+{% if example.description %}
+{{ example.description }}
+{% endif %}
+```python
+{{ example.code }}
+```
+{% endfor %}
+{% endif %}
+{% endif %}
+
+---
+
+{% if documentation.code_quality_assessments %}
+## Code Quality Assessment
+{% for assessment_item in documentation.code_quality_assessments %}
+### Assessment for: `{{ assessment_item.file_path }}`
+
+{{ assessment_item.assessment | safe }}
+---
+{% endfor %}
+{% endif %}
+
+---
+{% if documentation.sources %}
+## Source Information
+This documentation was generated based on information from various sources within the repository.
+Key source references include:
+{% for section_name, source_list in documentation.sources.items() %}
+{% if source_list %}
+**{{ section_name | capitalize }}:**
+{% for source in source_list %}
+- `{{ source.file }}`{% if source.lines %} (Lines: {{ source.lines }}){% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+---
+*Documentation generated on: {{ generated_at }}*

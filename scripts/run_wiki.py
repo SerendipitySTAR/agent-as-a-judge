@@ -13,11 +13,23 @@ import subprocess
 from pathlib import Path
 from dotenv import load_dotenv
 from urllib.parse import urlparse
+from typing import Optional # Added for type hinting
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from agent_as_a_judge.agent import JudgeAgent
 from agent_as_a_judge.config import AgentConfig
+from agent_as_a_judge.module.prompt import (
+    get_overview_prompt,
+    get_architecture_prompt,
+    get_diagram_prompt,
+    get_component_analysis_prompt,
+    get_component_detail_prompt,
+    get_usage_prompt,
+    get_installation_prompt,
+    get_advanced_topics_prompt,
+    get_examples_prompt
+)
 
 
 def download_github_repo(repo_url, target_dir):
@@ -687,7 +699,8 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
             "advanced_topics": "",
             "advanced_topics_sections": [],
             "examples": "",
-            "code_examples": []
+            "code_examples": [],
+            "code_quality_assessments": [] # Initialize for code quality
         }
         
         readme_path = repo_dir / "README.md"
@@ -706,7 +719,7 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
             workspace=repo_dir,
             instance=instance_file,
             judge_dir=judge_dir,
-            config=config,
+            config=config, # config now includes language and assess_quality
         )
         
         if not judge_agent.graph_file.exists():
@@ -718,22 +731,7 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
                         if not any(ex in str(p) for ex in config.exclude_dirs)]
         
         logging.info("Generating repository overview...")
-        overview_prompt = """
-        Provide a concise overview of this repository focused primarily on:
-
-        * Purpose and Scope: What is this project's main purpose?
-        * Core Features: What are the key features and capabilities?
-        * Target audience/users
-        * Main technologies or frameworks used
-
-        Extract this information directly from the README.md when possible, using the same structure and terminology.
-        Focus on being factual rather than interpretive.
-
-        Use short, direct headings without number prefixes. For example, use "Core Features" instead of "3. Core Features".
-        Keep explanations clear and direct. Format as clean markdown.
-        """
-        
-        overview_doc = judge_agent.ask_anything(overview_prompt)
+        overview_doc = judge_agent.ask_anything(get_overview_prompt(language=config.language))
         documentation["main_purpose"] = extract_markdown_content(overview_doc)
         
         documentation["use_cases"], documentation["benchmark_table"] = extract_use_cases_and_benchmarks(overview_doc)
@@ -742,27 +740,13 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
         if overview_code_refs:
             documentation["sources"]["overview"].extend(overview_code_refs)
         
-        generate_html_page(documentation, output_dir, "overview")
+        if config.output_format == "markdown":
+            generate_markdown_page(documentation, output_dir, "overview")
+        else:
+            generate_html_page(documentation, output_dir, "overview")
         
         logging.info("Generating architecture overview...")
-        architecture_prompt = """
-        Create a comprehensive architecture overview for this repository. Include:
-        
-        * A high-level description of the system architecture
-        * Main components and their roles (as a bullet list with clear descriptions)
-        * Data flow between components
-        * External dependencies and integrations
-        
-        Write in clear, concise language. Format each component description as:
-        
-        * **Component Name**: Brief natural language description that explains its role and functionality.
-        
-        DO NOT use markdown formatting inside the descriptions - they should be plain text sentences.
-        Avoid using technical jargon without explanation.
-        Use headings without numerical prefixes.
-        """
-        
-        architecture_doc = judge_agent.ask_anything(architecture_prompt)
+        architecture_doc = judge_agent.ask_anything(get_architecture_prompt(language=config.language))
         documentation["architecture"] = extract_markdown_content(architecture_doc)
         
         documentation["architectural_philosophy"], documentation["numbered_concepts"] = extract_architectural_philosophy(architecture_doc)
@@ -775,23 +759,13 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
         if arch_code_refs:
             documentation["sources"]["architecture"].extend(arch_code_refs)
         
-        generate_html_page(documentation, output_dir, "architecture")
+        if config.output_format == "markdown":
+            generate_markdown_page(documentation, output_dir, "architecture")
+        else:
+            generate_html_page(documentation, output_dir, "architecture")
         
         logging.info("Generating architectural diagrams...")
-        diagram_prompt = """
-        Create three high-level architectural diagrams using mermaid syntax:
-        
-        1. A system overview diagram showing the main components and their relationships
-        2. A workflow diagram showing the main process flows
-        3. A detailed component relationship diagram
-        
-        Make sure the diagrams are specific to this codebase, using actual component names from the code.
-        Add brief explanations for each diagram to help users understand what they're seeing.
-        
-        Use the proper mermaid syntax wrapped in ```mermaid blocks.
-        """
-        
-        diagram_response = judge_agent.ask_anything(diagram_prompt)
+        diagram_response = judge_agent.ask_anything(get_diagram_prompt(language=config.language))
         diagrams = extract_mermaid_diagrams(diagram_response)
         
         if diagrams:
@@ -801,36 +775,13 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
                 "component_relationships": diagrams[2] if len(diagrams) > 2 else None
             }
             
-            generate_html_page(documentation, output_dir, "diagrams")
+            if config.output_format == "markdown":
+                generate_markdown_page(documentation, output_dir, "diagrams")
+            else:
+                generate_html_page(documentation, output_dir, "diagrams")
         
         logging.info("Analyzing key components...")
-        component_analysis_prompt = """
-        Provide a comprehensive analysis of all key components in this codebase. For each component:
-        
-        * Name of the component
-        * Purpose and main responsibility
-        * How it interacts with other components
-        * Design patterns or techniques used
-        * Key characteristics (stateful/stateless, etc.)
-        * File paths that implement this component
-        
-        Create a table with Component names and their descriptions.
-        Organize components by logical groupings or layers if appropriate.
-        
-        IMPORTANT: When describing components in the table, use natural language sentences 
-        rather than Markdown formatting. Avoid using bullet points, code formatting, or other 
-        Markdown syntax in the description column.
-        
-        For example, instead of:
-        "- Handles data **processing**. \n- Uses `singleton` pattern."
-        
-        Write:
-        "Handles data processing. Uses singleton pattern. Provides utility functions for transforming inputs."
-        
-        For each component, explain not just what it does, but why it exists and how it fits into the larger system.
-        """
-        
-        component_analysis = judge_agent.ask_anything(component_analysis_prompt)
+        component_analysis = judge_agent.ask_anything(get_component_analysis_prompt(language=config.language))
         
         documentation["component_table"] = extract_component_table(component_analysis)
         
@@ -853,30 +804,9 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
         
         for component_name in component_names:
             logging.info(f"Generating documentation for component: {component_name}")
-            component_prompt = f"""
-            Provide detailed documentation for the '{component_name}' component:
-            
-            1. What is its primary purpose and responsibility?
-            2. How is it implemented? Describe design patterns, algorithms, or techniques.
-            3. How do developers use or interact with it?
-            4. What are its key methods, classes, or interfaces?
-            5. What parameters or configuration options does it accept?
-            6. What are common usage scenarios?
-            7. What are potential pitfalls or gotchas when using this component?
-            8. What advanced features or optimizations does it offer?
-            9. Provide multiple code examples showing different usage patterns
-            10. In what file(s) is this component implemented? Provide exact file paths.
-            
-            For methods, please format as:
-            - `method_name()`: Description of what the method does
-            
-            For parameters, please format as:
-            - `parameter_name` (default_value): Description of the parameter
-            
-            Be thorough and insightful - go beyond just describing what the code does and explain why it's designed this way.
-            """
-            
-            component_doc = judge_agent.ask_anything(component_prompt)
+            component_doc = judge_agent.ask_anything(
+                get_component_detail_prompt(component_name, language=config.language)
+            )
             
             component_details = {
                 "purpose": "",
@@ -924,28 +854,13 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
             
             documentation["components"][component_name] = component_details
             
-            generate_html_page(documentation, output_dir, f"component-{component_name}")
-        
+            if config.output_format == "markdown":
+                generate_markdown_page(documentation, output_dir, f"component-{component_name}")
+            else:
+                generate_html_page(documentation, output_dir, f"component-{component_name}")
+
         logging.info("Generating usage guide...")
-        usage_prompt = """
-        Create a comprehensive usage guide for this repository. Include:
-        
-        1. Getting started with basic examples
-        2. How to initialize and configure the system
-        3. Common usage patterns with code examples
-        4. Advanced usage scenarios with step-by-step instructions
-        5. Performance optimization tips
-        6. Best practices and recommended approaches
-        7. Include specific file paths or imports that users need to know about
-        
-        Include at least 3-5 different code examples for different use cases.
-        Show both basic and advanced usage patterns.
-        
-        Format your response as clear markdown with proper structure.
-        Be detailed but practical - focus on helping users accomplish real tasks with the code.
-        """
-        
-        usage_doc = judge_agent.ask_anything(usage_prompt)
+        usage_doc = judge_agent.ask_anything(get_usage_prompt(language=config.language))
         
         documentation["getting_started"], documentation["basic_example"], documentation["usage_features"] = extract_getting_started(usage_doc)
         documentation["advanced_usage"] = usage_doc
@@ -963,26 +878,13 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
         if usage_code_refs:
             documentation["sources"]["usage"].extend(usage_code_refs)
         
-        generate_html_page(documentation, output_dir, "usage")
+        if config.output_format == "markdown":
+            generate_markdown_page(documentation, output_dir, "usage")
+        else:
+            generate_html_page(documentation, output_dir, "usage")
         
         logging.info("Generating installation guide...")
-        installation_prompt = """
-        Provide detailed installation and setup instructions for this repository. Include:
-        
-        1. Prerequisites and dependencies (libraries, tools, accounts, etc.)
-        2. Step-by-step installation process for different environments (development, production)
-        3. Configuration options and environment variables with examples
-        4. How to verify the installation was successful
-        5. Common installation problems and their solutions
-        6. Reference any setup files like requirements.txt, package.json, etc. with their exact paths
-        
-        Include instructions for different operating systems if applicable.
-        If there are multiple installation methods, explain the benefits and drawbacks of each.
-        
-        Format your response as clear markdown with proper headings and code blocks.
-        """
-        
-        installation_doc = judge_agent.ask_anything(installation_prompt)
+        installation_doc = judge_agent.ask_anything(get_installation_prompt(language=config.language))
         documentation["installation"] = extract_markdown_content(installation_doc)
         
         install_code_refs = extract_code_references(installation_doc, python_files, repo_dir, repo_url)
@@ -1001,28 +903,13 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
             
             documentation["parameters"] = extract_parameters_from_content(all_component_examples)
         
-        generate_html_page(documentation, output_dir, "installation")
+        if config.output_format == "markdown":
+            generate_markdown_page(documentation, output_dir, "installation")
+        else:
+            generate_html_page(documentation, output_dir, "installation")
         
         logging.info("Generating advanced topics...")
-        advanced_topics_prompt = """
-        Provide documentation on advanced topics for this repository. Include:
-        
-        * Performance optimization strategies
-        * Extending or customizing the system
-        * Internal architecture details
-        * Complex algorithms or techniques used
-        * Integration with other systems
-        * Scaling considerations
-        * Security considerations
-        
-        Divide into clearly marked sections with short, direct headings (no number prefixes).
-        Include code examples where helpful.
-        
-        Format as clean markdown with proper headings.
-        This should be technical content for experienced users.
-        """
-        
-        advanced_topics_doc = judge_agent.ask_anything(advanced_topics_prompt)
+        advanced_topics_doc = judge_agent.ask_anything(get_advanced_topics_prompt(language=config.language))
         documentation["advanced_topics"] = extract_markdown_content(advanced_topics_doc)
         
         documentation["advanced_topics_sections"] = extract_architecture_sections(documentation["advanced_topics"])
@@ -1036,29 +923,13 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
                     "code": example.strip()
                 })
         
-        generate_html_page(documentation, output_dir, "advanced_topics")
+        if config.output_format == "markdown":
+            generate_markdown_page(documentation, output_dir, "advanced_topics")
+        else:
+            generate_html_page(documentation, output_dir, "advanced_topics")
         
         logging.info("Generating examples and tutorials...")
-        examples_prompt = """
-        Create a set of comprehensive examples and tutorials for this repository. Include:
-        
-        1. A "Getting Started" tutorial for absolute beginners
-        2. Basic examples showing core functionality
-        3. Advanced examples demonstrating more complex use cases
-        4. Common integration scenarios
-        5. End-to-end examples showing how to build something useful with this code
-        
-        For each example/tutorial, provide:
-        - A clear explanation of what the example demonstrates
-        - Step-by-step instructions
-        - Complete code with comments
-        - Expected output or results
-        
-        Format your response as clear markdown with proper headings and structure.
-        Make the examples practical and realistic - they should help users accomplish real tasks.
-        """
-        
-        examples_doc = judge_agent.ask_anything(examples_prompt)
+        examples_doc = judge_agent.ask_anything(get_examples_prompt(language=config.language))
         documentation["examples"] = extract_markdown_content(examples_doc)
         
         code_examples = extract_code_examples(examples_doc)
@@ -1076,8 +947,58 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
                     "code": example.strip()
                 })
         
-        generate_html_page(documentation, output_dir, "examples")
+        if config.output_format == "markdown":
+            generate_markdown_page(documentation, output_dir, "examples")
+        else:
+            generate_html_page(documentation, output_dir, "examples")
         
+        # Code Quality Assessment Integration
+        if config.assess_quality:
+            logging.info("Starting code quality assessment for selected files...")
+            MAX_FILES_TO_ASSESS = 5
+            selected_files_for_assessment_relative_paths = []
+
+            # Prioritize Python files from architecture_files
+            arch_files_relative_str_list = documentation.get("architecture_files", [])
+            if arch_files_relative_str_list:
+                for rel_path_str in arch_files_relative_str_list:
+                    if len(selected_files_for_assessment_relative_paths) < MAX_FILES_TO_ASSESS:
+                        if rel_path_str.endswith(".py"):
+                            full_path_check = repo_dir / rel_path_str
+                            if full_path_check.exists() and full_path_check.is_file() and rel_path_str not in selected_files_for_assessment_relative_paths:
+                                selected_files_for_assessment_relative_paths.append(rel_path_str)
+                    else:
+                        break
+            
+            # Supplement with other Python files
+            if len(selected_files_for_assessment_relative_paths) < MAX_FILES_TO_ASSESS:
+                if python_files: # python_files is defined earlier in this function
+                    for rel_py_file_path_obj in python_files: 
+                        rel_py_file_path_str = str(rel_py_file_path_obj)
+                        if len(selected_files_for_assessment_relative_paths) < MAX_FILES_TO_ASSESS:
+                            if rel_py_file_path_str not in selected_files_for_assessment_relative_paths:
+                                if (repo_dir / rel_py_file_path_str).is_file():
+                                    selected_files_for_assessment_relative_paths.append(rel_py_file_path_str)
+                        else:
+                            break
+                else: # Should ideally not happen if python_files is always populated
+                    logger.warning("'python_files' variable not found or empty. Cannot select general Python files for assessment.")
+
+            if not selected_files_for_assessment_relative_paths:
+                logger.info("No suitable Python files found for code quality assessment based on current selection criteria.")
+            else:
+                logger.info(f"Selected {len(selected_files_for_assessment_relative_paths)} Python files for quality assessment: {selected_files_for_assessment_relative_paths}")
+
+            for file_path_to_assess_str in selected_files_for_assessment_relative_paths:
+                logger.info(f"Assessing code quality for: {file_path_to_assess_str}")
+                assessment_text = judge_agent.assess_code_quality(file_path_to_assess_str, language=config.language)
+                if assessment_text:
+                    documentation["code_quality_assessments"].append({
+                        "file_path": file_path_to_assess_str,
+                        "assessment": assessment_text 
+                    })
+                # Optional: import time; time.sleep(1) # If rate limiting becomes an issue
+
         deduplicate_sources(documentation)
         
         documentation = review_and_optimize_content(documentation)
@@ -1086,10 +1007,14 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
         with open(doc_file, "w") as f:
             json.dump(documentation, f, indent=2)
         
-        generate_final_html(documentation, output_dir)
+        # Generate final output based on format
+        if config.output_format == "markdown":
+            generate_final_markdown(documentation, output_dir, language=config.language)
+        else:
+            generate_final_html(documentation, output_dir)
         
-        logging.info(f"Documentation generated at {output_dir}")
-        return doc_file
+        logging.info(f"Documentation generated at {output_dir} in '{config.output_format}' format.")
+        return doc_file # Return the path to the JSON data file
     
     except Exception as e:
         logging.error(f"Error during documentation generation: {e}")
@@ -1111,7 +1036,8 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
                 "components": [],
                 "installation": [],
                 "usage": []
-            }
+            },
+            "code_quality_assessments": [] # Ensure key exists even on error
         }
         
         doc_file = output_dir / f"{repo_dir.name}_documentation.json"
@@ -1155,6 +1081,75 @@ def generate_final_html(documentation, output_dir):
     generate_html_page(documentation, output_dir, "complete")
     html_file = output_dir / f"{documentation['name']}_documentation.html"
     return html_file
+
+
+# New function for Markdown page generation (Phase 1: logging only)
+def generate_markdown_page(documentation, output_dir, section=None):
+    logger = logging.getLogger(__name__)
+    logger.info(f"Markdown processing for section: {section if section else 'general (not writing to file per section)'}")
+    # For Phase 1, this function does not write to a file per section for Markdown.
+    # The main Markdown generation will happen in generate_final_markdown.
+    pass
+
+
+# New function for final Markdown generation
+def generate_final_markdown(documentation, output_dir, language: str = "en") -> Optional[Path]: # Added language parameter
+    logger = logging.getLogger(__name__)
+    template_dir = Path(__file__).parent / "templates" / "markdown"
+    
+    try:
+        # jinja2 is typically imported at the top of the file.
+        # If not, 'import jinja2' would be needed here or globally.
+        # Assuming jinja2 is already imported as it's used by generate_html_page.
+        import jinja2 
+    except ImportError:
+        logger.error("jinja2 library is not installed. Please install it to generate Markdown output.")
+        return None
+
+    try:
+        env = jinja2.Environment(
+            loader=jinja2.FileSystemLoader(template_dir),
+            autoescape=jinja2.select_autoescape(['md']), # For Markdown
+            undefined=jinja2.StrictUndefined # Raise error for undefined variables
+        )
+        
+        template_name = "index.md.j2"
+        if language == "zh":
+            try:
+                template = env.get_template("index_zh.md.j2")
+                logger.info("Using Chinese Markdown template: index_zh.md.j2")
+            except jinja2.exceptions.TemplateNotFound:
+                logger.warning("Chinese Markdown template 'index_zh.md.j2' not found. Falling back to default 'index.md.j2'.")
+                template = env.get_template("index.md.j2") # Fallback
+        else:
+            template = env.get_template("index.md.j2")
+        
+        markdown_content = template.render(
+            documentation=documentation,
+            generated_at=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        )
+        
+        md_file = output_dir / f"{documentation['name']}_documentation.md"
+        with open(md_file, "w", encoding="utf-8") as f:
+            f.write(markdown_content)
+            
+        logger.info(f"Final Markdown documentation generated at {md_file}")
+        return md_file
+    except jinja2.exceptions.TemplateNotFound:
+        logger.error(f"Markdown template 'index.md.j2' not found in '{template_dir}'.")
+        logger.warning("Please create the Markdown template 'scripts/templates/markdown/index.md.j2' to generate the full Markdown document.")
+        # Create a dummy file to indicate an attempt was made, but it's incomplete.
+        dummy_md_file = output_dir / f"{documentation['name']}_documentation_TEMPLATE_MISSING.md"
+        error_message = f"# Markdown Generation Error\n\nTemplate `index.md.j2` not found in `{template_dir}`.\nPlease create this template to enable Markdown output."
+        with open(dummy_md_file, "w", encoding="utf-8") as f:
+            f.write(error_message)
+        logger.info(f"Created a placeholder error file at {dummy_md_file} due to missing template.")
+        return dummy_md_file # Return path to dummy file
+    except Exception as e:
+        logger.error(f"Error in generate_final_markdown: {e}")
+        import traceback
+        logger.error(traceback.format_exc())
+        return None
 
 
 def extract_tech_stack(documentation):
@@ -1278,12 +1273,18 @@ def generate_components_html(components):
 def parse_arguments():
     parser = argparse.ArgumentParser(description="Generate documentation for GitHub repositories")
     
-    parser.add_argument(
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument(
         "repo_url",
         type=str,
         help="GitHub repository URL (e.g., https://github.com/metauto-ai/gptswarm)",
         nargs="?",
         default=None
+    )
+    group.add_argument(
+        "--local-path",
+        type=str,
+        help="Local path to the project directory."
     )
     
     parser.add_argument(
@@ -1327,6 +1328,25 @@ def parse_arguments():
         choices=["planning", "comprehensive (no planning)", "efficient (no planning)"],
         help="Planning strategy"
     )
+    parser.add_argument(
+        "--output-format",
+        type=str,
+        choices=["html", "markdown"],
+        default="html",
+        help="Output format for the documentation (html or markdown)."
+    )
+    parser.add_argument(
+        "--language",
+        type=str,
+        choices=["en", "zh"],
+        default="en",
+        help="Language for documentation generation (en or zh)."
+    )
+    parser.add_argument(
+        '--assess-quality', 
+        action='store_true', 
+        help='Enable basic code quality assessment during documentation generation.'
+    )
     
     return parser.parse_args()
 
@@ -1353,11 +1373,9 @@ def main():
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s"
     )
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger(__name__) # Ensure logger is available in main
     
     args = parse_arguments()
-    
-    repo_url = args.repo_url or get_repo_url_interactive()
     
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -1365,11 +1383,31 @@ def main():
     judge_dir = output_dir / "judge"
     judge_dir.mkdir(parents=True, exist_ok=True)
     
+    repo_dir: Path
+    repo_url: Optional[str]
+
+    if args.local_path:
+        project_path_str = args.local_path
+        repo_dir = Path(project_path_str).resolve()
+        if not repo_dir.is_dir():
+            logger.error(f"Local path specified is not a valid directory: {repo_dir}")
+            sys.exit(1)
+        repo_url = None # Or repo_dir.as_uri() if preferred later
+        logger.info(f"Processing local project path: {repo_dir}")
+    else:
+        # args.repo_url must be set if local_path is not, due to mutually exclusive group
+        repo_url = args.repo_url 
+        if not repo_url: # Should not happen if argparse is set up correctly
+             repo_url = get_repo_url_interactive()
+        logger.info(f"Processing GitHub repository URL: {repo_url}")
+        # Download only if it's a URL
+        repo_dir = download_github_repo(repo_url, output_dir)
+
     start_time = time.time()
     
     try:
-        logger.info(f"Starting repository download and documentation: {repo_url}")
-        repo_dir = download_github_repo(repo_url, output_dir)
+        # logger.info(f"Starting repository download and documentation: {repo_url}") # Moved up
+        # repo_dir = download_github_repo(repo_url, output_dir) # Moved up and made conditional
         
         include_dirs = args.include_dirs.copy()
         common_code_dirs = ["src", "lib", "app", "core", "utils", "scripts", "tools", "services"]
@@ -1385,29 +1423,47 @@ def main():
             setting=args.setting,
             planning=args.planning,
             judge_dir=judge_dir,
-            workspace_dir=repo_dir.parent,
+            workspace_dir=repo_dir.parent, # repo_dir is now defined before this
             instance_dir=judge_dir,
+            output_format=args.output_format,
+            local_path=args.local_path, # Pass the original local_path arg
+            language=args.language,
+            assess_quality=args.assess_quality
         )
         
         logger.info(f"Agent configuration: include={agent_config.include_dirs}, exclude={agent_config.exclude_dirs}, "
-                    f"files={agent_config.exclude_files}, setting={agent_config.setting}, planning={agent_config.planning}")
+                    f"files={agent_config.exclude_files}, setting={agent_config.setting}, planning={agent_config.planning}, "
+                    f"output_format={agent_config.output_format}, local_path={agent_config.local_path}, language={agent_config.language}, assess_quality={agent_config.assess_quality}")
         
         doc_file = generate_repo_documentation(repo_dir, output_dir, agent_config, repo_url)
         
         total_time = time.time() - start_time
         logger.info(f"Total documentation time: {total_time:.2f} seconds")
         
-        html_file = output_dir / f"{repo_dir.name}_documentation.html"
-        json_file = output_dir / f"{repo_dir.name}_documentation.json"
+        # Determine final output file path based on format for user message
+        # doc_file is the JSON data file from generate_repo_documentation
+        json_file_path = doc_file 
+        final_doc_path: Optional[Path] = None
+
+        if args.output_format == "markdown":
+            # Check for the dummy file if template was missing, otherwise the expected actual file
+            expected_md_file = output_dir / f"{repo_dir.name}_documentation.md"
+            dummy_md_file = output_dir / f"{repo_dir.name}_documentation_TEMPLATE_MISSING.md"
+            if dummy_md_file.exists(): # If template was missing, this dummy file would have been created
+                final_doc_path = dummy_md_file
+            else: # Otherwise, point to the expected (potentially existing) actual md file
+                final_doc_path = expected_md_file
+        else: # html or default
+            final_doc_path = output_dir / f"{repo_dir.name}_documentation.html"
         
         try:
-            with open(json_file, 'r') as f:
+            with open(json_file_path, 'r') as f: # Use json_file_path
                 doc_data = json.load(f)
             
             doc_data["generated_at"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             doc_data["generation_time_seconds"] = total_time
             
-            with open(json_file, 'w') as f:
+            with open(json_file_path, 'w') as f: # Use json_file_path
                 json.dump(doc_data, f, indent=2)
         except Exception as e:
             logger.warning(f"Could not update documentation metadata: {e}")
@@ -1415,9 +1471,22 @@ def main():
         print("\n" + "=" * 80)
         print(f"✅ Documentation generated successfully in {total_time:.2f} seconds!")
         print("-" * 80)
-        print(f"📄 JSON Documentation: {doc_file}")
-        print(f"🌐 HTML Documentation: {html_file}")
-        print(f"🔗 Open HTML file in browser: file://{html_file.absolute()}")
+        print(f"📄 JSON Data: {json_file_path}") # Print path to the JSON data file
+
+        if final_doc_path and final_doc_path.exists():
+            if final_doc_path.name.endswith("_TEMPLATE_MISSING.md"):
+                print(f"⚠️ Markdown Documentation (Template Missing): {final_doc_path}")
+                print(f"   A placeholder file was created. Please create 'index.md.j2' in 'scripts/templates/markdown/'.")
+            elif args.output_format == "markdown":
+                print(f"🖋️ Markdown Documentation: {final_doc_path}")
+                print(f"🔗 Open Markdown file: {final_doc_path.absolute()}")
+            else: # HTML
+                print(f"🌐 HTML Documentation: {final_doc_path}")
+                print(f"🔗 Open HTML file in browser: file://{final_doc_path.absolute()}")
+        elif final_doc_path : # Path was determined but file might not exist (e.g. Markdown template existed but render failed, or HTML failed)
+             print(f"Output document ({args.output_format}) was expected at '{final_doc_path}' but may not have been generated successfully (file not found).")
+        else: # Should not happen if final_doc_path is always determined based on args
+            print(f"Output document ({args.output_format}) could not be determined or was not generated.")
         print("=" * 80)
         
     except Exception as e:

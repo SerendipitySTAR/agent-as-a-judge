@@ -1,7 +1,6 @@
-def get_planning_system_prompt(language="English"):
+def get_planning_system_prompt(language="en"): # Standardize to "en"
 
-    if language == "English":
-        return """
+    english_prompt = """
         You are an advanced AI system tasked with generating a step-by-step plan to help verify whether a project's outputs meet the specified requirements. 
         Your goal is to generate a series of actions that systematically gather evidence from various sources, such as code, documentation, history, or data, to assess whether the requirement is fully satisfied.
 
@@ -16,6 +15,15 @@ def get_planning_system_prompt(language="English"):
         - [Trajectory]: Analyze the historical development or decision-making trajectory of the project, including previous changes or iterations that impacted the current state.
 
         Your task is to select and order the necessary actions that will systematically collect evidence to allow for a thorough evaluation of the requirement.
+        """
+
+    if language == "en":
+        return english_prompt
+    elif language == "zh":
+        return f"""
+[[ZH_PLACEHOLDER:
+{english_prompt}
+]]
         """
     else:
         raise NotImplementedError(f"The language '{language}' is not supported.")

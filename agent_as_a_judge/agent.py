@@ -15,6 +15,7 @@ from rich.text import Text
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.emoji import Emoji
+from typing import Optional # Ensure Optional is imported
 
 from agent_as_a_judge.module.code_search import DevCodeSearch
 from agent_as_a_judge.module.read import DevRead
@@ -27,6 +28,7 @@ from agent_as_a_judge.module.planning import Planning
 from agent_as_a_judge.llm.provider import LLM
 from agent_as_a_judge.config import AgentConfig
 from agent_as_a_judge.utils import truncate_string
+from agent_as_a_judge.module.prompt import get_code_quality_prompt # Import the new prompt getter
 
 
 console = Console()
@@ -217,20 +219,22 @@ class JudgeAgent:
         logging.info(f"Total requirements checked: {total_checked_requirements}")
 
     def ask_anything(self, question: str):
-
+        language = self.config.language # Retrieve language from config
         workflow = ["workspace", "locate", "read", "search"]
+        # Note: self.check_requirement is called here, which itself uses language.
+        # The direct `ask` call below is the one we're primarily targeting for this method.
         llm_stats, start_time = self.check_requirement(
             criteria=question, workflow=workflow, user_query=question
         )
         evidence = truncate_string(
             self.display_tree(), model=self.llm.model_name, max_tokens=10000
         )
-        answer = self.aaaj_ask.ask(question, evidence=evidence)
+        answer = self.aaaj_ask.ask(question, evidence=evidence, language=language) # Pass language
         total_time = time.time() - start_time
         return answer
 
     def check_requirement(self, criteria: str, workflow: list, user_query: str):
-
+        language = self.config.language # Retrieve language from config
         start_time = time.time()
         total_llm_stats = {
             "cost": 0.0,
@@ -261,7 +265,7 @@ class JudgeAgent:
                 # logging.info(f">>> [Key Evidence] Workspace Structure:\n\n{workspace_info}\n\n")
 
             elif info_type == "locate":
-                locate_result = self.locate_file(criteria, workspace_info)
+                locate_result = self.locate_file(criteria, workspace_info, language=language) # Pass language
                 related_files = locate_result["file_paths"]
                 total_llm_stats.update(locate_result["llm_stats"])
                 logging.info(
@@ -309,7 +313,7 @@ class JudgeAgent:
         combined_evidence = truncate_string(
             combined_evidence, model=self.llm.model_name
         )
-        check_llm_stats = self.aaaj_ask.check(criteria, combined_evidence)
+        check_llm_stats = self.aaaj_ask.check(criteria, combined_evidence, language=language) # Pass language
         total_llm_stats.update(check_llm_stats)
         total_time = time.time() - start_time
 
@@ -428,9 +432,51 @@ class JudgeAgent:
         with open(save_path, "w", encoding="utf-8") as f:
             json.dump(self.workspace_info, f, indent=4)
 
-    def locate_file(self, criteria: str, workspace_info: str) -> dict:
+    def locate_file(self, criteria: str, workspace_info: str, language: str = "en") -> dict: # Add language with default
+        # Pass language to the actual DevLocate implementation
+        return self.aaaj_locate.locate_file(criteria, workspace_info, language=language)
 
-        return self.aaaj_locate.locate_file(criteria, workspace_info)
+    def assess_code_quality(self, file_path: str, language: str = "en") -> Optional[str]:
+        """
+        Assesses the code quality of a given file.
+        """
+        logging.info(f"Starting code quality assessment for: {file_path} with language: {language}")
+        full_file_path = self.workspace / file_path
+
+        if not full_file_path.exists() or not full_file_path.is_file():
+            logging.error(f"File not found or not a file: {full_file_path}")
+            return None
+
+        try:
+            with open(full_file_path, 'r', encoding='utf-8', errors='ignore') as f:
+                code_content = f.read()
+        except Exception as e:
+            logging.error(f"Error reading file {full_file_path} for quality assessment: {e}")
+            return None
+
+        MAX_CODE_LENGTH_FOR_ASSESSMENT = 10000  # Example limit for characters
+        
+        if len(code_content) > MAX_CODE_LENGTH_FOR_ASSESSMENT:
+            logging.warning(f"Code content of {file_path} is too long ({len(code_content)} chars). Truncating for quality assessment.")
+            code_snippet = code_content[:MAX_CODE_LENGTH_FOR_ASSESSMENT]
+        else:
+            code_snippet = code_content
+        
+        if not code_snippet.strip():
+            logging.warning(f"File {file_path} is empty or contains only whitespace. Skipping quality assessment.")
+            return "File is empty or contains only whitespace. No assessment performed."
+
+        prompt_str = get_code_quality_prompt(code_snippet=code_snippet, file_path=str(file_path), language=language)
+
+        try:
+            # Using self.config.language for the ask method, as it represents the agent's configured language for generation
+            # The 'language' parameter to assess_code_quality itself is for the prompt content selection.
+            assessment_result = self.aaaj_ask.ask(question=prompt_str, evidence="", language=self.config.language)
+            logging.info(f"Successfully assessed code quality for: {file_path}")
+            return assessment_result
+        except Exception as e:
+            logging.error(f"Error getting code quality assessment for {file_path} from LLM: {e}")
+            return None
 
     def display_judgment(
         self, criteria: str, satisfied: bool, reason: str, logger: logging.Logger

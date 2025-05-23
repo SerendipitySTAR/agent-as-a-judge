@@ -1,6 +1,5 @@
-def get_retrieve_system_prompt(language="English"):
-    if language == "English":
-        return """
+def get_retrieve_system_prompt(language="en"): # Standardize to "en"
+    english_prompt = """
 You are an advanced AI system specializing in retrieving environmental feedback from project execution trajectories. Your task is to analyze the provided trajectory data and extract information about the most relevant files mentioned in the given criteria.
 
 Focus on the following:
@@ -16,6 +15,14 @@ Your output should be structured as follows:
 Avoid including details about file contents or existence, as this information is already available. Focus solely on the environmental feedback related to the execution of the most relevant files.
 
 Your goal is to provide clear and concise information that helps determine if there were any execution problems with the files mentioned in the criteria.
+        """
+    if language == "en":
+        return english_prompt
+    elif language == "zh":
+        return f"""
+[[ZH_PLACEHOLDER:
+{english_prompt}
+]]
         """
     else:
         raise NotImplementedError(f"The language '{language}' is not supported.")

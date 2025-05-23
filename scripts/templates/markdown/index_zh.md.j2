@@ -1,0 +1,261 @@
+{# {{ documentation.repo_name }} 的主要文档模板 #}
+# {{ documentation.repo_name }} 文档
+
+生成于：{{ generated_at }}
+
+---
+
+## 概述 (Overview)
+
+{{ documentation.main_purpose | default("未指定主要目的。") }}
+
+{% if documentation.use_cases %}
+### 用例 (Use Cases)
+{{ documentation.use_cases }}
+{% endif %}
+
+{% if documentation.benchmark_table %}
+### 基准测试 (Benchmarks)
+| 基准/任务 (Benchmark/Task) | 描述 (Description) | 代理类型/配置 (Agent Types/Configuration) |
+|--------------------------|--------------------|--------------------------------------|
+{% for benchmark in documentation.benchmark_table %}
+| {{ benchmark.benchmark }} | {{ benchmark.description }} | {{ benchmark.agent_types }} |
+{% endfor %}
+{% endif %}
+
+---
+
+## 架构 (Architecture)
+
+{{ documentation.architecture | default("未提供架构概述。") }}
+
+{% if documentation.architectural_philosophy %}
+### 架构理念与设计原则 (Architectural Philosophy & Design Principles)
+{{ documentation.architectural_philosophy }}
+{% endif %}
+
+{% if documentation.numbered_concepts %}
+### 关键架构概念 (Key Architectural Concepts)
+{% for concept in documentation.numbered_concepts %}
+- **{{ concept.title }}**: {{ concept.description }}
+{% endfor %}
+{% endif %}
+
+{% if documentation.architecture_sections %}
+### 架构章节 (Architecture Sections)
+{% for section in documentation.architecture_sections %}
+#### {{ section.title }}
+{{ section.content }}
+{% endfor %}
+{% endif %}
+
+{% if documentation.flow_diagrams %}
+{% if documentation.flow_diagrams.architecture and documentation.flow_diagrams.architecture.mermaid_code %}
+### 系统架构图 (System Architecture Diagram)
+```mermaid
+{{ documentation.flow_diagrams.architecture.mermaid_code | safe }}
+```
+{% if documentation.flow_diagrams.architecture.description %}
+*描述 (Description): {{ documentation.flow_diagrams.architecture.description }}*
+{% endif %}
+{% endif %}
+
+{% if documentation.flow_diagrams.workflow and documentation.flow_diagrams.workflow.mermaid_code %}
+### 工作流程图 (Workflow Diagram)
+```mermaid
+{{ documentation.flow_diagrams.workflow.mermaid_code | safe }}
+```
+{% if documentation.flow_diagrams.workflow.description %}
+*描述 (Description): {{ documentation.flow_diagrams.workflow.description }}*
+{% endif %}
+{% endif %}
+
+{% if documentation.flow_diagrams.component_relationships and documentation.flow_diagrams.component_relationships.mermaid_code %}
+### 组件关系图 (Component Relationship Diagram)
+```mermaid
+{{ documentation.flow_diagrams.component_relationships.mermaid_code | safe }}
+```
+{% if documentation.flow_diagrams.component_relationships.description %}
+*描述 (Description): {{ documentation.flow_diagrams.component_relationships.description }}*
+{% endif %}
+{% endif %}
+{% endif %}
+
+{% if documentation.architecture_files %}
+### 相关架构文件 (Relevant Architecture Files)
+{% for file_path in documentation.architecture_files %}
+- `{{ file_path }}`
+{% endfor %}
+{% endif %}
+
+---
+
+## 核心组件 (Core Components)
+{% if documentation.component_table %}
+### 组件概述 (Components Overview)
+| 组件/参数 (Component/Parameter) | 描述 (Description) |
+|---------------------------------|--------------------|
+{% for item in documentation.component_table %}
+| `{{ item.name }}`      | {{ item.description | default('N/A') }} |
+{% endfor %}
+{% endif %}
+
+{% if documentation.components %}
+{% for component_name, component_data in documentation.components.items() %}
+### 组件 (Component): {{ component_name }}
+
+**目的 (Purpose):** 
+{{ component_data.purpose | default('未指定。') }}
+
+{% if component_data.usage %}
+**用法 (Usage):** 
+{{ component_data.usage }}
+{% endif %}
+
+{% if component_data.methods_with_descriptions %}
+**主要方法 (Key Methods):**
+{% for method in component_data.methods_with_descriptions %}
+- `{{ method.name }}`: {{ method.description | default('未提供描述。') }}
+{% endfor %}
+{% endif %}
+
+{% if component_data.parameters %}
+**参数 (Parameters):**
+| 参数 (Parameter)   | 默认值/可选值 (Default Value / Values) | 注意事项 (Notes) |
+|--------------------|----------------------------------------|----------------|
+{% for param in component_data.parameters %}
+| `{{ param.name }}` | `{{ param.values | default('N/A') }}` | {{ param.notes | default('N/A') }} |
+{% endfor %}
+{% endif %}
+
+{% if component_data.code_example %}
+**示例 (Example):**
+```python
+{{ component_data.code_example }}
+```
+{% endif %}
+
+{% if component_data.source_files %}
+**源文件 (Source Files):**
+{% for source_file_info in component_data.source_files %}
+- `{{ source_file_info.file }}`{% if source_file_info.lines %} (行号 Lines: {{ source_file_info.lines }}){% endif %}
+{% endfor %}
+{% endif %}
+
+---
+{% endfor %}
+{% else %}
+无详细组件信息。 (No detailed component information available.)
+{% endif %}
+
+---
+
+## 用户指南 (Usage Guide)
+
+{% if documentation.getting_started %}
+### 快速入门 (Getting Started)
+{{ documentation.getting_started }}
+{% endif %}
+
+{% if documentation.basic_example %}
+**基础示例 (Basic Example):**
+```python
+{{ documentation.basic_example }}
+```
+{% endif %}
+
+{% if documentation.advanced_usage %}
+### 高级用法 (Advanced Usage)
+{{ documentation.advanced_usage }}
+{% endif %}
+
+{% if documentation.usage_features %}
+**主要使用特性 (Key Usage Features):**
+{% for feature in documentation.usage_features %}
+- {{ feature }}
+{% endfor %}
+{% endif %}
+
+---
+
+## 安装与设置 (Installation and Setup)
+
+{% if documentation.installation %}
+{{ documentation.installation }}
+{% else %}
+未提供安装详情。 (No installation details provided.)
+{% endif %}
+
+{% if documentation.parameters %}
+### 全局参数/配置 (Global Parameters/Configuration)
+| 参数名称 (Parameter Name) | 一般值/默认值 (Typical Values / Default) | 注意事项 (Notes) |
+|---------------------------|----------------------------------------|----------------|
+{% for param in documentation.parameters %}
+| `{{ param.name }}` | `{{ param.values | default('N/A') }}` | {{ param.notes | default('N/A') }} |
+{% endfor %}
+{% endif %}
+
+---
+
+{% if documentation.advanced_topics %}
+## 高级主题 (Advanced Topics)
+{{ documentation.advanced_topics }}
+
+{% if documentation.advanced_topics_sections %}
+{% for section in documentation.advanced_topics_sections %}
+### {{ section.title }}
+{{ section.content }}
+{% endfor %}
+{% endif %}
+{% endif %}
+
+---
+
+{% if documentation.examples or documentation.code_examples %}
+## 示例与教程 (Examples & Tutorials)
+{% if documentation.examples %}
+{{ documentation.examples }}
+{% endif %}
+
+{% if documentation.code_examples %}
+{% for example in documentation.code_examples %}
+### {{ example.title | default('示例 (Example)') }}
+{% if example.description %}
+{{ example.description }}
+{% endif %}
+```python
+{{ example.code }}
+```
+{% endfor %}
+{% endif %}
+{% endif %}
+
+---
+
+{% if documentation.code_quality_assessments %}
+## 代码质量评估 (Code Quality Assessment)
+{% for assessment_item in documentation.code_quality_assessments %}
+### 文件评估 (Assessment for): `{{ assessment_item.file_path }}`
+
+{{ assessment_item.assessment | safe }}
+---
+{% endfor %}
+{% endif %}
+
+---
+{% if documentation.sources %}
+## 来源信息 (Source Information)
+本文档基于仓库中的各种来源信息生成。
+主要来源参考包括：(Key source references include:)
+{% for section_name, source_list in documentation.sources.items() %}
+{% if source_list %}
+**{{ section_name | capitalize }}:**
+{% for source in source_list %}
+- `{{ source.file }}`{% if source.lines %} (行号 Lines: {{ source.lines }}){% endif %}
+{% endfor %}
+{% endif %}
+{% endfor %}
+{% endif %}
+
+---
+*文档生成于 (Documentation generated on): {{ generated_at }}*

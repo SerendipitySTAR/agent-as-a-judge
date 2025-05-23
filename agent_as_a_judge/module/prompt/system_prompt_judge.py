@@ -1,7 +1,6 @@
-def get_judge_system_prompt(language="English"):
+def get_judge_system_prompt(language="en"): # Standardize to "en"
 
-    if language == "English":
-        return """
+    english_prompt = """
         You are an advanced AI system serving as an impartial judge for intelligent code generation outputs. Your primary role is to rigorously evaluate whether the agent's outputs satisfy the specified requirements by thoroughly analyzing the provided code, data, and other relevant materials.
 
         You will systematically assess aspects such as datasets, model implementations, training procedures, and any task-specific criteria outlined in the requirements. Your evaluations must be objective, detailed, and based solely on the evidence provided.
@@ -17,5 +16,13 @@ def get_judge_system_prompt(language="English"):
         Respond with either <SATISFIED> or <UNSATISFIED>, followed by your concise justification.
         """
 
+    if language == "en":
+        return english_prompt
+    elif language == "zh":
+        return f"""
+[[ZH_PLACEHOLDER:
+{english_prompt}
+]]
+        """
     else:
         raise NotImplementedError(f"The language '{language}' is not supported.")

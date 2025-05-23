@@ -1,9 +1,10 @@
-def get_planning_prompt(criteria: str) -> str:
+def get_planning_prompt(criteria: str, language: str = "en") -> str:
     """
     Returns the LLM prompt to generate a step-by-step plan for evaluating or resolving the given criteria.
     The prompt includes demonstrations to guide the LLM in creating effective plans without repeating the action descriptions.
     """
-    return f"""
+    
+    english_prompt = f"""
     You are tasked with generating a list of actions to evaluate or resolve the following requirement. 
     Select only the necessary actions and arrange them in a logical order to systematically collect evidence and verify whether the requirement is satisfied.
 
@@ -32,3 +33,14 @@ def get_planning_prompt(criteria: str) -> str:
 
     Response:
     """
+
+    if language == "en":
+        return english_prompt
+    elif language == "zh":
+        return f"""
+[[ZH_PLACEHOLDER:
+{english_prompt}
+]]
+"""
+    else:
+        raise NotImplementedError(f"The language '{language}' is not supported for the planning prompt.")

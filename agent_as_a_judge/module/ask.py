@@ -44,10 +44,11 @@ class DevAsk:
         evidence: str,
         majority_vote: int = 1,
         critical_threshold: float = 0.5,
+        language: str = "en", # Added language parameter
     ) -> dict:
         total_llm_stats = self._initialize_llm_stats()
         responses, judges = self._collect_judgments(
-            criteria, evidence, majority_vote, total_llm_stats
+            criteria, evidence, majority_vote, total_llm_stats, language=language # Pass language
         )
 
         satisfied_count = judges.count("<SATISFIED>")
@@ -58,9 +59,9 @@ class DevAsk:
         return total_llm_stats
 
     def _collect_judgments(
-        self, criteria: str, evidence: str, majority_vote: int, llm_stats: dict
+        self, criteria: str, evidence: str, majority_vote: int, llm_stats: dict, language: str # Added language parameter
     ) -> tuple:
-        system_prompt = get_judge_system_prompt(language="English")
+        system_prompt = get_judge_system_prompt(language=language) # Use language parameter
         prompt = get_judge_prompt(criteria=criteria, evidence=evidence)
         messages = [
             {"role": "system", "content": system_prompt},
@@ -101,11 +102,11 @@ class DevAsk:
         stats["input_tokens"] += result.get("input_tokens", 0)
         stats["output_tokens"] += result.get("output_tokens", 0)
 
-    def ask(self, question: str, evidence: str) -> str:
+    def ask(self, question: str, evidence: str, language: str = "en") -> str: # Added language parameter
         if not evidence:
             raise ValueError("Evidence must be provided.")
 
-        system_prompt = get_ask_system_prompt(language="English")
+        system_prompt = get_ask_system_prompt(language=language) # Use language parameter
         prompt = get_ask_prompt(evidence=evidence, question=question)
         messages = [
             {"role": "system", "content": system_prompt},
