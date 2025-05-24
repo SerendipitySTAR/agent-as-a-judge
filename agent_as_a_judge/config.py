@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Optional
+from typing import List, Optional, Dict # Added Dict
 from pathlib import Path
 
 
@@ -18,6 +18,8 @@ class AgentConfig:
     local_path: Optional[str] = None
     language: str = "en"
     assess_quality: bool = False
+    doc_config_path: Optional[str] = None
+    doc_config: Optional[Dict] = None # Or Optional[dict] if Python 3.9+ is assumed
 
     @classmethod
     def from_args(cls, args):
@@ -55,5 +57,9 @@ class AgentConfig:
             ),
             assess_quality=(
                 args.assess_quality if hasattr(args, "assess_quality") else False
-            )
+            ),
+            doc_config_path=(
+                args.config_file if hasattr(args, "config_file") else None
+            ),
+            doc_config=None # This will be loaded later
         )

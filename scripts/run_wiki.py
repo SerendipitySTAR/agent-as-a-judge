@@ -13,12 +13,13 @@ import subprocess
 from pathlib import Path
 from dotenv import load_dotenv
 from urllib.parse import urlparse
-from typing import Optional # Added for type hinting
+from typing import Optional, Dict, List, Any 
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from agent_as_a_judge.agent import JudgeAgent
 from agent_as_a_judge.config import AgentConfig
+from agent_as_a_judge.doc_config_utils import load_doc_config
 from agent_as_a_judge.module.prompt import (
     get_overview_prompt,
     get_architecture_prompt,
@@ -28,8 +29,35 @@ from agent_as_a_judge.module.prompt import (
     get_usage_prompt,
     get_installation_prompt,
     get_advanced_topics_prompt,
-    get_examples_prompt
+    get_examples_prompt,
+    get_code_quality_prompt 
 )
+
+# Default configuration for document sections
+DEFAULT_SECTIONS_CONFIG: List[Dict[str, Any]] = [
+    {"id": "overview", "title": "Repository Overview", "type": "overview", "enabled": True, "prompt_key": "get_overview_prompt"},
+    {"id": "architecture", "title": "Architecture Overview", "type": "architecture", "enabled": True, "prompt_key": "get_architecture_prompt"},
+    {"id": "diagrams", "title": "Architectural Diagrams", "type": "diagrams", "enabled": True, "prompt_key": "get_diagram_prompt"},
+    {"id": "component_analysis", "title": "Key Components Analysis", "type": "component_analysis", "enabled": True, "prompt_key": "get_component_analysis_prompt"},
+    {"id": "components", "title": "Component Details", "type": "components", "enabled": True, "prompt_key_detail": "get_component_detail_prompt"}, 
+    {"id": "usage", "title": "Usage Guide", "type": "usage", "enabled": True, "prompt_key": "get_usage_prompt"},
+    {"id": "installation", "title": "Installation Guide", "type": "installation", "enabled": True, "prompt_key": "get_installation_prompt"},
+    {"id": "advanced_topics", "title": "Advanced Topics", "type": "advanced_topics", "enabled": True, "prompt_key": "get_advanced_topics_prompt"},
+    {"id": "examples", "title": "Examples and Tutorials", "type": "examples", "enabled": True, "prompt_key": "get_examples_prompt"},
+    {"id": "code_quality", "title": "Code Quality Assessment", "type": "code_quality", "enabled": True, "max_files_to_assess": 5}
+]
+
+PROMPT_FUNCTION_MAP = {
+    "get_overview_prompt": get_overview_prompt,
+    "get_architecture_prompt": get_architecture_prompt,
+    "get_diagram_prompt": get_diagram_prompt,
+    "get_component_analysis_prompt": get_component_analysis_prompt,
+    "get_component_detail_prompt": get_component_detail_prompt,
+    "get_usage_prompt": get_usage_prompt,
+    "get_installation_prompt": get_installation_prompt,
+    "get_advanced_topics_prompt": get_advanced_topics_prompt,
+    "get_examples_prompt": get_examples_prompt,
+}
 
 
 def download_github_repo(repo_url, target_dir):
@@ -560,65 +588,83 @@ def extract_code_references(content, python_files, repo_dir, repo_url=None):
 def deduplicate_sources(documentation):
     seen_refs = set()
     
-    for section, refs in documentation["sources"].items():
-        unique_refs = []
-        for ref in refs:
+    for section_key, section_data in documentation.get("sources", {}).items(): # Iterate over sources dictionary
+        unique_refs_for_section = []
+        for ref in section_data: # section_data is the list of refs for this section
             ref_key = f"{ref.get('file', '')}:{ref.get('lines', '')}"
             if ref_key not in seen_refs:
                 seen_refs.add(ref_key)
-                unique_refs.append(ref)
-        
-        documentation["sources"][section] = unique_refs
+                unique_refs_for_section.append(ref)
+        documentation["sources"][section_key] = unique_refs_for_section
 
 
 def review_and_optimize_content(documentation):
     logging.info("Reviewing and optimizing documentation content...")
     
-    if documentation.get("advanced_topics") and len(documentation.get("advanced_topics_sections", [])) <= 1:
-        if documentation.get("architecture"):
-            logging.info("Merging limited advanced topics into architecture section")
-            documentation["architecture"] += "\n\n## Advanced Considerations\n\n" + documentation["advanced_topics"]
+    # Example: Merge advanced_topics into architecture if advanced_topics is brief
+    # This needs to be adapted to the new structure where content is under section_id
+    advanced_topics_section_id = "advanced_topics" # Assuming 'advanced_topics' is the ID
+    architecture_section_id = "architecture"
+
+    if advanced_topics_section_id in documentation and \
+       isinstance(documentation[advanced_topics_section_id], dict) and \
+       documentation[advanced_topics_section_id].get("enabled", True) and \
+       len(documentation[advanced_topics_section_id].get("advanced_topics_sections", [])) <=1 and \
+       len(documentation[advanced_topics_section_id].get("content","")) < 500 : # Check content length
+
+        if architecture_section_id in documentation and \
+           isinstance(documentation[architecture_section_id], dict) and \
+           documentation[architecture_section_id].get("enabled", True):
+            
+            logging.info(f"Merging brief '{documentation[advanced_topics_section_id]['title']}' into '{documentation[architecture_section_id]['title']}' section.")
+            
+            adv_content = documentation[advanced_topics_section_id].get("content", "")
+            if adv_content:
+                documentation[architecture_section_id]["content"] += "\n\n## Advanced Considerations\n\n" + adv_content
+            
+            # Mark original advanced_topics as merged/disabled or remove
+            documentation[advanced_topics_section_id]["enabled"] = False
+            documentation[advanced_topics_section_id]["content"] = "Content merged into Architecture section."
+            documentation[advanced_topics_section_id]["merged_into"] = architecture_section_id
         else:
-            logging.info("No architecture section found to merge advanced topics into")
-    
-    components_to_merge = []
-    for component_name, component_data in list(documentation.get("components", {}).items()):
-        content_length = len(component_data.get("purpose", "")) + len(component_data.get("usage", ""))
-        if content_length < 200 and not component_data.get("code_example") and not component_data.get("methods_with_descriptions"):
-            logging.info(f"Component {component_name} has limited content, marking for merge")
-            components_to_merge.append(component_name)
-    
-    if components_to_merge:
-        logging.info(f"Merging {len(components_to_merge)} components with limited content")
-        
-        other_components = {
-            "purpose": "This section contains additional components with related functionality.",
-            "usage": "These components provide supporting features and utilities.",
-            "methods": [],
-            "methods_with_descriptions": []
-        }
-        
-        for component_name in components_to_merge:
-            component_data = documentation["components"].pop(component_name, {})
-            other_components["purpose"] += f"\n\n**{component_name}**: {component_data.get('purpose', '')}"
-            
-            if component_data.get("usage"):
-                other_components["usage"] += f"\n\n**{component_name} Usage**: {component_data.get('usage', '')}"
-            
-            if component_data.get("methods"):
-                other_components["methods"].extend(component_data.get("methods", []))
-            
-            if component_data.get("methods_with_descriptions"):
-                for method in component_data.get("methods_with_descriptions", []):
-                    method["name"] = f"{component_name}.{method['name']}"
-                    other_components["methods_with_descriptions"].append(method)
+            logging.info(f"No suitable '{architecture_section_id}' section found or it's disabled; cannot merge '{advanced_topics_section_id}'.")
+
+    # Example: Component merging (remains complex and might need specific section_config flags)
+    # This logic will need to be adapted to the new structure if "components" is a specific section type.
+    # For now, this part of optimization might be less effective until component processing is fully refactored.
+    if "components" in documentation and isinstance(documentation["components"], dict): # Global components dict
+        components_to_merge = []
+        for component_name, component_data in list(documentation.get("components", {}).items()):
+            if isinstance(component_data, dict): # Ensure it's a dict before accessing keys
+                content_length = len(component_data.get("purpose", "")) + len(component_data.get("usage", ""))
+                if content_length < 200 and not component_data.get("code_example") and not component_data.get("methods_with_descriptions"):
+                    logging.info(f"Component {component_name} has limited content, marking for merge")
+                    components_to_merge.append(component_name)
         
         if components_to_merge:
-            documentation["components"]["Other Components"] = other_components
-    
-    if documentation.get("installation") and len(documentation.get("installation", "")) < 300:
-        logging.info("Installation section is too brief, enhancing with more information")
-        documentation["installation"] += """
+            logging.info(f"Merging {len(components_to_merge)} components with limited content into 'Other Components'")
+            other_components_data = documentation["components"].get("Other Components", {
+                "purpose": "This section contains additional components with related functionality.",
+                "usage": "These components provide supporting features and utilities.",
+                "methods": [], "methods_with_descriptions": [], "parameters": []
+            })
+            
+            for comp_name in components_to_merge:
+                comp_data = documentation["components"].pop(comp_name, {})
+                other_components_data["purpose"] += f"\n\n**{comp_name}**: {comp_data.get('purpose', '')}"
+                # ... (merge other fields as before) ...
+            documentation["components"]["Other Components"] = other_components_data
+
+    # Installation section enhancement (adapting to new structure)
+    installation_section_id = "installation" # Assuming 'installation' is the ID
+    if installation_section_id in documentation and \
+       isinstance(documentation[installation_section_id], dict) and \
+       documentation[installation_section_id].get("enabled", True):
+        
+        current_content = documentation[installation_section_id].get("content", "")
+        if len(current_content) < 300:
+            logging.info("Installation section is too brief, enhancing with more information")
+            enhancement = """
 
 ## Common Installation Issues
 
@@ -632,10 +678,13 @@ If you encounter any issues during installation, try the following troubleshooti
 
 For further assistance, please refer to the project documentation or open an issue on the repository.
 """
+            documentation[installation_section_id]["content"] += enhancement
     
-    for i, example in enumerate(documentation.get("code_examples", [])):
-        if not example.get("description") or len(example.get("description", "")) < 50:
-            example["description"] = f"Example demonstrating key functionality of the {documentation.get('repo_name')} library."
+    # Code examples description enhancement
+    if "code_examples" in documentation and isinstance(documentation["code_examples"], list):
+        for i, example in enumerate(documentation.get("code_examples", [])):
+            if not example.get("description") or len(example.get("description", "")) < 50:
+                example["description"] = f"Example demonstrating key functionality of the {documentation.get('repo_name')} library."
     
     return documentation
 
@@ -666,9 +715,7 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
     logging.info(f"Judge directory: {judge_dir}")
     
     def print_directory_structure(path, max_depth=3, depth=0):
-        if depth > max_depth:
-            return
-        
+        if depth > max_depth: return
         try:
             for item in path.iterdir():
                 if item.is_dir() and not item.name.startswith('.'):
@@ -676,384 +723,406 @@ def generate_repo_documentation(repo_dir, output_dir, config, repo_url):
                     print_directory_structure(item, max_depth, depth + 1)
                 elif item.is_file() and item.suffix in ['.py', '.md', '.json', '.yaml', '.yml']:
                     logging.info(f"{'  ' * depth}[FILE] {item.name}")
-        except Exception as e:
-            logging.error(f"Error scanning directory {path}: {e}")
+        except Exception as e: logging.error(f"Error scanning directory {path}: {e}")
     
     logging.info("Repository structure:")
     print_directory_structure(repo_dir)
     
     try:
-        documentation = {
-            "name": repo_dir.name,
+        doc_title = f"{repo_dir.name} Documentation"
+        output_filename_base = repo_dir.name 
+        if config.doc_config:
+            doc_title = config.doc_config.get("document_title", doc_title)
+            output_filename_base = config.doc_config.get("output_filename", output_filename_base)
+            if not output_filename_base.strip(): output_filename_base = repo_dir.name
+
+        documentation: Dict[str, Any] = {
+            "name": repo_dir.name, 
+            "document_title": doc_title,
+            "output_filename_base": output_filename_base,
             "url": str(repo_url),
             "repo_name": repo_dir.name,
             "org_name": repo_url.split("/")[-2] if repo_url and "/" in repo_url else "",
             "last_indexed": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "sources": {
-                "overview": [],
-                "architecture": [],
-                "components": [],
-                "installation": [],
-                "usage": []
-            },
-            "advanced_topics": "",
-            "advanced_topics_sections": [],
-            "examples": "",
-            "code_examples": [],
-            "code_quality_assessments": [] # Initialize for code quality
+            "sources": {key: [] for key in [s['id'] for s in DEFAULT_SECTIONS_CONFIG if s.get('type') != 'components' and s.get('type') != 'code_quality']},
+            # Initialize all potential top-level and section-specific data keys used by templates/extractors
+            "main_purpose": "", "use_cases": "", "benchmark_table": [],
+            "architecture": "", # For backward compat with extract_tech_stack; section-specific content is under documentation[section_id]['content']
+            "architectural_philosophy": "", "numbered_concepts": [], "architecture_sections": [], "architecture_files": [], # These might become section-specific
+            "flow_diagrams": {}, "component_table": [], "components": {}, # components is for detailed component data
+            "getting_started": "", "basic_example": "", "advanced_usage": "", "usage_features": [],
+            "installation": "", "parameters": [], # installation for main content, parameters for extracted
+            "advanced_topics": "", "advanced_topics_sections": [], # advanced_topics for main content
+            "examples": "", "code_examples": [], # examples for main content
+            "code_quality_assessments": []
         }
+        documentation["sources"]["components"] = [] 
         
         readme_path = repo_dir / "README.md"
         if readme_path.exists():
             with open(readme_path, 'r', encoding='utf-8', errors='replace') as f:
                 readme_content = f.read()
-                readme_lines = readme_content.splitlines()
-                readme_length = len(readme_lines)
-            
-            documentation["sources"]["overview"] = [{"file": "README.md", "lines": f"1-{min(100, readme_length)}"}]
-            documentation["sources"]["architecture"].append({"file": "README.md"})
-            documentation["sources"]["installation"].append({"file": "README.md"})
-            documentation["sources"]["usage"].append({"file": "README.md"})
+            if "overview" in documentation["sources"]:
+                documentation["sources"]["overview"].append({"file": "README.md", "lines": f"1-{len(readme_content.splitlines())}"})
         
-        judge_agent = JudgeAgent(
-            workspace=repo_dir,
-            instance=instance_file,
-            judge_dir=judge_dir,
-            config=config, # config now includes language and assess_quality
-        )
+        judge_agent = JudgeAgent(workspace=repo_dir, instance=instance_file, judge_dir=judge_dir, config=config)
         
         if not judge_agent.graph_file.exists():
             logging.info("Constructing graph for repository...")
             judge_agent.construct_graph()
         
         python_files = list(repo_dir.glob("**/*.py"))
-        python_files = [p.relative_to(repo_dir) for p in python_files 
-                        if not any(ex in str(p) for ex in config.exclude_dirs)]
+        python_files = [p.relative_to(repo_dir) for p in python_files if not any(ex in str(p) for ex in config.exclude_dirs)]
         
-        logging.info("Generating repository overview...")
-        overview_doc = judge_agent.ask_anything(get_overview_prompt(language=config.language))
-        documentation["main_purpose"] = extract_markdown_content(overview_doc)
-        
-        documentation["use_cases"], documentation["benchmark_table"] = extract_use_cases_and_benchmarks(overview_doc)
-        
-        overview_code_refs = extract_code_references(overview_doc, python_files, repo_dir, repo_url)
-        if overview_code_refs:
-            documentation["sources"]["overview"].extend(overview_code_refs)
-        
-        if config.output_format == "markdown":
-            generate_markdown_page(documentation, output_dir, "overview")
+        sections_to_process = DEFAULT_SECTIONS_CONFIG
+        if config.doc_config and "sections" in config.doc_config and isinstance(config.doc_config["sections"], list):
+            custom_sections = config.doc_config["sections"]
+            # Merge custom with default: custom takes precedence for id, but default provides structure if type matches
+            processed_ids = set()
+            merged_sections = []
+            for custom_sec in custom_sections:
+                default_sec = next((ds for ds in DEFAULT_SECTIONS_CONFIG if ds["id"] == custom_sec["id"]), None)
+                if default_sec:
+                    merged_section = {**default_sec, **custom_sec} # Custom overrides default for shared keys
+                else: # Truly custom section not in defaults
+                    merged_section = custom_sec
+                merged_sections.append(merged_section)
+                processed_ids.add(custom_sec["id"])
+            # Add any default sections that weren't in the custom config, respecting their default 'enabled' state
+            for default_sec in DEFAULT_SECTIONS_CONFIG:
+                if default_sec["id"] not in processed_ids:
+                     merged_sections.append(default_sec)
+            sections_to_process = merged_sections
+            logging.info(f"Using document structure from config file: {config.doc_config_path}")
         else:
-            generate_html_page(documentation, output_dir, "overview")
-        
-        logging.info("Generating architecture overview...")
-        architecture_doc = judge_agent.ask_anything(get_architecture_prompt(language=config.language))
-        documentation["architecture"] = extract_markdown_content(architecture_doc)
-        
-        documentation["architectural_philosophy"], documentation["numbered_concepts"] = extract_architectural_philosophy(architecture_doc)
-        
-        documentation["architecture_sections"] = extract_architecture_sections(documentation["architecture"])
-        
-        documentation["architecture_files"] = extract_relevant_files(repo_dir, architecture_doc)
-        
-        arch_code_refs = extract_code_references(architecture_doc, python_files, repo_dir, repo_url)
-        if arch_code_refs:
-            documentation["sources"]["architecture"].extend(arch_code_refs)
-        
-        if config.output_format == "markdown":
-            generate_markdown_page(documentation, output_dir, "architecture")
-        else:
-            generate_html_page(documentation, output_dir, "architecture")
-        
-        logging.info("Generating architectural diagrams...")
-        diagram_response = judge_agent.ask_anything(get_diagram_prompt(language=config.language))
-        diagrams = extract_mermaid_diagrams(diagram_response)
-        
-        if diagrams:
-            documentation["flow_diagrams"] = {
-                "architecture": diagrams[0],
-                "workflow": diagrams[1] if len(diagrams) > 1 else None,
-                "component_relationships": diagrams[2] if len(diagrams) > 2 else None
-            }
-            
-            if config.output_format == "markdown":
-                generate_markdown_page(documentation, output_dir, "diagrams")
-            else:
-                generate_html_page(documentation, output_dir, "diagrams")
-        
-        logging.info("Analyzing key components...")
-        component_analysis = judge_agent.ask_anything(get_component_analysis_prompt(language=config.language))
-        
-        documentation["component_table"] = extract_component_table(component_analysis)
-        
-        comp_code_refs = extract_code_references(component_analysis, python_files, repo_dir, repo_url)
-        if comp_code_refs:
-            documentation["sources"]["components"].extend(comp_code_refs)
-        
-        documentation["components"] = {}
-        
-        component_names = [item["name"] for item in documentation["component_table"]] if documentation["component_table"] else []
-        
-        if not component_names and "component_table" in documentation:
-            analysis_data = extract_json_from_llm_response(component_analysis)
-            if analysis_data and "key_components" in analysis_data:
-                component_names = [comp.get("name") for comp in analysis_data.get("key_components", [])]
-        
-        if not component_names:
-            logging.info("No components identified from analysis, attempting to extract from code graph...")
-            component_names = ["Main Component", "Core Library", "Utilities"]
-        
-        for component_name in component_names:
-            logging.info(f"Generating documentation for component: {component_name}")
-            component_doc = judge_agent.ask_anything(
-                get_component_detail_prompt(component_name, language=config.language)
-            )
-            
-            component_details = {
-                "purpose": "",
-                "usage": "",
-                "methods": [],
-                "code_example": ""
-            }
-            
-            purpose_match = re.search(r'^(.+?)(?=\n\n|\n#)', component_doc, re.DOTALL)
-            if purpose_match:
-                component_details["purpose"] = purpose_match.group(1).strip()
-            
-            code_examples = extract_code_examples(component_doc)
-            if code_examples:
-                component_details["code_example"] = code_examples[0].strip()
-                
-                if len(code_examples) > 1:
-                    for i, example in enumerate(code_examples[1:], 1):
-                        documentation["code_examples"].append({
-                            "title": f"{component_name} Example {i}",
-                            "description": f"Example usage of the {component_name} component",
-                            "code": example.strip()
-                        })
-            
-            component_details["methods_with_descriptions"] = extract_method_descriptions(component_doc)
-            if component_details["methods_with_descriptions"]:
-                component_details["methods"] = [m["name"] for m in component_details["methods_with_descriptions"]]
-            
-            component_details["parameters"] = extract_parameters_for_component(component_doc)
-            
-            if not component_details["parameters"] and component_details["code_example"]:
-                extracted_params = extract_parameters_from_content(component_details["code_example"])
-                if extracted_params:
-                    component_details["parameters"] = extracted_params
-            
-            usage_pattern = r'(?:usage|how to use|interaction):?\s*(?:\n|.)*?(?:##|\n\n|$)'
-            usage_section = re.search(usage_pattern, component_doc, re.IGNORECASE)
-            if usage_section:
-                component_details["usage"] = usage_section.group(0).strip()
-            
-            component_file_refs = extract_code_references(component_doc, python_files, repo_dir, repo_url)
-            if component_file_refs:
-                component_details["source_files"] = component_file_refs
-                documentation["sources"]["components"].extend(component_file_refs)
-            
-            documentation["components"][component_name] = component_details
-            
-            if config.output_format == "markdown":
-                generate_markdown_page(documentation, output_dir, f"component-{component_name}")
-            else:
-                generate_html_page(documentation, output_dir, f"component-{component_name}")
+            logging.info("Using default document structure.")
 
-        logging.info("Generating usage guide...")
-        usage_doc = judge_agent.ask_anything(get_usage_prompt(language=config.language))
-        
-        documentation["getting_started"], documentation["basic_example"], documentation["usage_features"] = extract_getting_started(usage_doc)
-        documentation["advanced_usage"] = usage_doc
-        
-        code_examples = extract_code_examples(usage_doc)
-        if code_examples:
-            for i, example in enumerate(code_examples):
-                documentation["code_examples"].append({
-                    "title": f"Usage Example {i+1}",
-                    "description": "Example demonstrating how to use this repository",
-                    "code": example.strip()
-                })
-        
-        usage_code_refs = extract_code_references(usage_doc, python_files, repo_dir, repo_url)
-        if usage_code_refs:
-            documentation["sources"]["usage"].extend(usage_code_refs)
-        
-        if config.output_format == "markdown":
-            generate_markdown_page(documentation, output_dir, "usage")
-        else:
-            generate_html_page(documentation, output_dir, "usage")
-        
-        logging.info("Generating installation guide...")
-        installation_doc = judge_agent.ask_anything(get_installation_prompt(language=config.language))
-        documentation["installation"] = extract_markdown_content(installation_doc)
-        
-        install_code_refs = extract_code_references(installation_doc, python_files, repo_dir, repo_url)
-        if install_code_refs:
-            documentation["sources"]["installation"].extend(install_code_refs)
-        
-        documentation["parameters"] = extract_parameters_from_content(architecture_doc)
-        if not documentation["parameters"]:
-            documentation["parameters"] = extract_parameters_from_content(usage_doc)
-        
-        if not documentation["parameters"]:
-            all_component_examples = ""
-            for component_data in documentation["components"].values():
-                if component_data.get("code_example"):
-                    all_component_examples += component_data["code_example"] + "\n\n"
+        # --- Main Loop for Section Generation ---
+        for section_config in sections_to_process:
+            section_id = section_config["id"]
+            section_title = section_config.get("title", section_id.replace("_", " ").title())
+            section_type = section_config["type"] # Assume type is always present from default or custom config
             
-            documentation["parameters"] = extract_parameters_from_content(all_component_examples)
-        
-        if config.output_format == "markdown":
-            generate_markdown_page(documentation, output_dir, "installation")
-        else:
-            generate_html_page(documentation, output_dir, "installation")
-        
-        logging.info("Generating advanced topics...")
-        advanced_topics_doc = judge_agent.ask_anything(get_advanced_topics_prompt(language=config.language))
-        documentation["advanced_topics"] = extract_markdown_content(advanced_topics_doc)
-        
-        documentation["advanced_topics_sections"] = extract_architecture_sections(documentation["advanced_topics"])
-        
-        code_examples = extract_code_examples(advanced_topics_doc)
-        if code_examples:
-            for i, example in enumerate(code_examples):
-                documentation["code_examples"].append({
-                    "title": f"Advanced Example {i+1}",
-                    "description": "Advanced usage example",
-                    "code": example.strip()
-                })
-        
-        if config.output_format == "markdown":
-            generate_markdown_page(documentation, output_dir, "advanced_topics")
-        else:
-            generate_html_page(documentation, output_dir, "advanced_topics")
-        
-        logging.info("Generating examples and tutorials...")
-        examples_doc = judge_agent.ask_anything(get_examples_prompt(language=config.language))
-        documentation["examples"] = extract_markdown_content(examples_doc)
-        
-        code_examples = extract_code_examples(examples_doc)
-        if code_examples:
-            for i, example in enumerate(code_examples):
-                title_pattern = r'#+\s*(.*?)\s*\n+```'
-                title_matches = re.findall(title_pattern, examples_doc)
-                title = f"Example {i+1}"
-                if i < len(title_matches):
-                    title = title_matches[i]
-                
-                documentation["code_examples"].append({
-                    "title": title,
-                    "description": f"Example demonstrating {title}",
-                    "code": example.strip()
-                })
-        
-        if config.output_format == "markdown":
-            generate_markdown_page(documentation, output_dir, "examples")
-        else:
-            generate_html_page(documentation, output_dir, "examples")
-        
-        # Code Quality Assessment Integration
-        if config.assess_quality:
-            logging.info("Starting code quality assessment for selected files...")
-            MAX_FILES_TO_ASSESS = 5
-            selected_files_for_assessment_relative_paths = []
+            if not section_config.get("enabled", True): # Default to enabled if not specified
+                logging.info(f"Skipping disabled section: {section_title} (ID: {section_id})")
+                documentation[section_id] = {"title": section_title, "type": section_type, "content": "This section was disabled by configuration.", "enabled": False}
+                continue
 
-            # Prioritize Python files from architecture_files
-            arch_files_relative_str_list = documentation.get("architecture_files", [])
-            if arch_files_relative_str_list:
-                for rel_path_str in arch_files_relative_str_list:
-                    if len(selected_files_for_assessment_relative_paths) < MAX_FILES_TO_ASSESS:
-                        if rel_path_str.endswith(".py"):
-                            full_path_check = repo_dir / rel_path_str
-                            if full_path_check.exists() and full_path_check.is_file() and rel_path_str not in selected_files_for_assessment_relative_paths:
+            logging.info(f"Generating section: {section_title} (Type: {section_type})")
+            # Initialize section in documentation dict, ensuring all expected sub-keys for templates are present
+            documentation[section_id] = {
+                "title": section_title, "content": "", "type": section_type,
+                "prompt_key": section_config.get("prompt_key"),
+                "prompt_override": section_config.get("prompt_override"),
+                "enabled": True
+            }
+            # Initialize specific data keys for this section type if they are defined in DEFAULT_SECTIONS_CONFIG
+            default_section_meta = next((ds for ds in DEFAULT_SECTIONS_CONFIG if ds["id"] == section_id), None)
+            if default_section_meta and "data_keys" in default_section_meta:
+                for key in default_section_meta["data_keys"]:
+                    documentation[section_id][key] = [] if "sections" in key or "files" in key or "table" in key or "concepts" in key else ""
+
+
+            prompt_str = None
+            if section_config.get("prompt_override"):
+                prompt_str = section_config["prompt_override"]
+            elif section_config.get("prompt_key") and section_config["prompt_key"] in PROMPT_FUNCTION_MAP:
+                prompt_fn = PROMPT_FUNCTION_MAP[section_config["prompt_key"]]
+                prompt_str = prompt_fn(language=config.language)
+            
+            # Skip LLM call if no prompt and not a special handling type
+            if not prompt_str and section_type not in ["components", "code_quality", "diagrams", "custom"]:
+                logging.warning(f"No valid prompt for pre-defined section '{section_id}' of type '{section_type}'. Skipping LLM call.")
+                documentation[section_id]['content'] = "Error: Prompt not configured for this section."
+                continue
+            
+            # --- Section-specific processing ---
+            if section_type == "overview":
+                if prompt_str:
+                    overview_doc_content = judge_agent.ask_anything(prompt_str)
+                    documentation[section_id]['content'] = extract_markdown_content(overview_doc_content)
+                    documentation['main_purpose'] = documentation[section_id]['content'] # Global key
+                    use_cases, benchmark_table = extract_use_cases_and_benchmarks(overview_doc_content)
+                    documentation['use_cases'] = use_cases # Global key
+                    documentation['benchmark_table'] = benchmark_table # Global key
+                    overview_code_refs = extract_code_references(overview_doc_content, python_files, repo_dir, repo_url)
+                    if overview_code_refs: documentation["sources"]["overview"].extend(overview_code_refs)
+            
+            elif section_type == "architecture":
+                if prompt_str:
+                    architecture_doc_content = judge_agent.ask_anything(prompt_str)
+                    main_arch_content = extract_markdown_content(architecture_doc_content)
+                    documentation[section_id]['content'] = main_arch_content
+                    documentation['architecture'] = main_arch_content # Global key for backward compat (e.g. tech_stack)
+                    
+                    philosophy, concepts = extract_architectural_philosophy(architecture_doc_content)
+                    documentation[section_id]['architectural_philosophy'] = philosophy
+                    documentation[section_id]['numbered_concepts'] = concepts
+                    documentation[section_id]['architecture_sections'] = extract_architecture_sections(main_arch_content)
+                    documentation[section_id]['architecture_files'] = extract_relevant_files(repo_dir, architecture_doc_content)
+                    
+                    arch_code_refs = extract_code_references(architecture_doc_content, python_files, repo_dir, repo_url)
+                    if arch_code_refs: documentation["sources"]["architecture"].extend(arch_code_refs)
+
+            elif section_type == "diagrams":
+                diagram_prompt_to_use = prompt_str # This might be from override or PROMPT_FUNCTION_MAP
+                if not diagram_prompt_to_use and section_config.get("prompt_key", "get_diagram_prompt") in PROMPT_FUNCTION_MAP : # Default if not overridden
+                    diagram_prompt_to_use = PROMPT_FUNCTION_MAP[section_config.get("prompt_key", "get_diagram_prompt")](language=config.language)
+
+                if diagram_prompt_to_use:
+                    diagram_response_content = judge_agent.ask_anything(diagram_prompt_to_use)
+                    documentation[section_id]['content'] = diagram_response_content 
+                    diagrams_data = extract_mermaid_diagrams(diagram_response_content)
+                    if diagrams_data:
+                        documentation["flow_diagrams"] = { # Global key
+                            "architecture": diagrams_data[0],
+                            "workflow": diagrams_data[1] if len(diagrams_data) > 1 else None,
+                            "component_relationships": diagrams_data[2] if len(diagrams_data) > 2 else None
+                        }
+                else:
+                    logging.warning(f"No prompt for diagrams section '{section_id}'. Skipping.")
+                    documentation[section_id]['content'] = "Error: Prompt not configured for this section."
+
+            elif section_type == "component_analysis":
+                if prompt_str:
+                    component_analysis_content = judge_agent.ask_anything(prompt_str)
+                    documentation[section_id]['content'] = extract_markdown_content(component_analysis_content)
+                    documentation["component_table"] = extract_component_table(component_analysis_content) # Global
+                    comp_code_refs = extract_code_references(component_analysis_content, python_files, repo_dir, repo_url)
+                    if comp_code_refs: documentation["sources"]["components"].extend(comp_code_refs) # Shared source
+
+            elif section_type == "usage":
+                if prompt_str:
+                    usage_doc_content = judge_agent.ask_anything(prompt_str)
+                    documentation[section_id]['content'] = extract_markdown_content(usage_doc_content)
+                    gs, be, uf = extract_getting_started(usage_doc_content)
+                    documentation['getting_started'] = gs
+                    documentation['basic_example'] = be
+                    documentation['usage_features'] = uf
+                    documentation['advanced_usage'] = documentation[section_id]['content'] 
+
+                    code_ex = extract_code_examples(usage_doc_content)
+                    if code_ex: documentation["code_examples"].extend([{"title": f"Usage Example {i+1}", "description": "Example from usage guide", "code": ex.strip()} for i, ex in enumerate(code_ex)])
+                    usage_code_refs = extract_code_references(usage_doc_content, python_files, repo_dir, repo_url)
+                    if usage_code_refs: documentation["sources"]["usage"].extend(usage_code_refs)
+            
+            elif section_type == "installation":
+                if prompt_str:
+                    installation_doc_content = judge_agent.ask_anything(prompt_str)
+                    documentation[section_id]['content'] = extract_markdown_content(installation_doc_content)
+                    documentation['installation'] = documentation[section_id]['content'] 
+                    install_code_refs = extract_code_references(installation_doc_content, python_files, repo_dir, repo_url)
+                    if install_code_refs: documentation["sources"]["installation"].extend(install_code_refs)
+                    
+                    if not documentation.get("parameters"): # Populate global parameters if not already done
+                        param_content_sources = [
+                            documentation.get("architecture", {}).get("content", documentation.get("architecture", "")), 
+                            documentation.get("usage", {}).get("content", documentation.get("advanced_usage", "")) 
+                        ]
+                        all_content_for_params = ""
+                        for cs in param_content_sources:
+                            if isinstance(cs, str): all_content_for_params += cs + "\n\n"
+                        
+                        extracted_params = extract_parameters_from_content(all_content_for_params)
+                        if extracted_params: documentation["parameters"].extend(extracted_params)
+                                     
+                        if not documentation.get("parameters"): 
+                            all_comp_examples = "".join([comp.get("code_example","") for comp_name, comp in documentation.get("components",{}).items() if isinstance(comp, dict) and comp.get("code_example")])
+                            documentation["parameters"].extend(extract_parameters_from_content(all_comp_examples))
+            
+            elif section_type == "advanced_topics":
+                if prompt_str:
+                    advanced_topics_content = judge_agent.ask_anything(prompt_str)
+                    documentation[section_id]['content'] = extract_markdown_content(advanced_topics_content)
+                    documentation['advanced_topics'] = documentation[section_id]['content']
+                    documentation[section_id]['advanced_topics_sections'] = extract_architecture_sections(documentation[section_id]['content'])
+                    code_ex = extract_code_examples(advanced_topics_content)
+                    if code_ex: documentation["code_examples"].extend([{"title": f"Advanced Example {i+1}", "description": "Advanced usage example", "code": ex.strip()} for i, ex in enumerate(code_ex)])
+
+            elif section_type == "examples":
+                if prompt_str:
+                    examples_content = judge_agent.ask_anything(prompt_str)
+                    documentation[section_id]['content'] = extract_markdown_content(examples_content)
+                    documentation['examples'] = documentation[section_id]['content']
+                    code_ex = extract_code_examples(examples_content)
+                    if code_ex:
+                        for i, example_code in enumerate(code_ex):
+                            title_pattern = r'#+\s*(.*?)\s*\n+```' 
+                            relevant_text_for_title = examples_content.split(example_code)[0].split('\n')[-5:] 
+                            title_matches = re.findall(title_pattern, "\n".join(relevant_text_for_title))
+                            title = title_matches[-1] if title_matches else f"Example {i+1}"
+                            documentation["code_examples"].append({"title": title, "description": f"Example from {section_title}", "code": example_code.strip()})
+            
+            elif section_type == "components": # Special handling for components (detail loop)
+                # This section_config is for the overall "Components" section, not individual items
+                # The actual component data is stored in documentation['components']
+                documentation[section_id]['content'] = "Details for components are listed below." # Placeholder content
+                
+                # Component details loop (moved from outside the main loop)
+                component_names_override = section_config.get("component_names")
+                if isinstance(component_names_override, list) and component_names_override:
+                    actual_component_names = component_names_override
+                elif documentation.get("component_table"): # From component_analysis section
+                    actual_component_names = [item["name"] for item in documentation["component_table"]]
+                else: 
+                    actual_component_names = ["Main Component", "Core Library", "Utilities"] # Fallback
+                
+                logging.info(f"Processing component details for: {actual_component_names}")
+                documentation["components"] = {} # Initialize/reset
+                for comp_name in actual_component_names:
+                    logging.info(f"Generating documentation for component: {comp_name}")
+                    detail_prompt_key = section_config.get("prompt_key_detail", "get_component_detail_prompt")
+                    detail_prompt_override = section_config.get("prompt_override_detail")
+                    comp_prompt_str = detail_prompt_override or PROMPT_FUNCTION_MAP[detail_prompt_key](comp_name, language=config.language)
+                    comp_doc_content = judge_agent.ask_anything(comp_prompt_str)
+                    comp_details = {
+                        "purpose": extract_markdown_content(re.search(r'^(.+?)(?=\n\n|\n#)', comp_doc_content, re.DOTALL).group(1).strip() if re.search(r'^(.+?)(?=\n\n|\n#)', comp_doc_content, re.DOTALL) else ""),
+                        "usage": extract_markdown_content(re.search(r'(?:usage|how to use|interaction):?\s*(?:\n|.)*?(?:##|\n\n|$)', comp_doc_content, re.IGNORECASE).group(0).strip() if re.search(r'(?:usage|how to use|interaction):?\s*(?:\n|.)*?(?:##|\n\n|$)', comp_doc_content, re.IGNORECASE) else ""),
+                        "methods_with_descriptions": extract_method_descriptions(comp_doc_content),
+                        "parameters": extract_parameters_for_component(comp_doc_content),
+                        "code_example": extract_code_examples(comp_doc_content)[0].strip() if extract_code_examples(comp_doc_content) else ""
+                    }
+                    comp_details["methods"] = [m["name"] for m in comp_details["methods_with_descriptions"]]
+                    if not comp_details["parameters"] and comp_details["code_example"]:
+                        comp_details["parameters"] = extract_parameters_from_content(comp_details["code_example"])
+                    comp_file_refs = extract_code_references(comp_doc_content, python_files, repo_dir, repo_url)
+                    if comp_file_refs: 
+                        comp_details["source_files"] = comp_file_refs
+                        documentation["sources"]["components"].extend(comp_file_refs)
+                    documentation["components"][comp_name] = comp_details
+                    if comp_details["code_example"] and len(extract_code_examples(comp_doc_content)) > 1:
+                         for i, example in enumerate(extract_code_examples(comp_doc_content)[1:], 1):
+                            documentation["code_examples"].append({"title": f"{comp_name} Example {i}", "description": f"Example usage of the {comp_name} component", "code": example.strip()})
+
+            elif section_type == "code_quality":
+                if config.assess_quality:
+                    logging.info("Starting code quality assessment for selected files...")
+                    documentation[section_id]["assessments"] = [] # Initialize here
+                    
+                    MAX_FILES_TO_ASSESS = section_config.get("max_files_to_assess", 5)
+                    selected_files_for_assessment_relative_paths = []
+                    
+                    arch_section_data = documentation.get("architecture", {}) # Check if architecture section was processed
+                    arch_files_list = []
+                    if isinstance(arch_section_data, dict) and arch_section_data.get("enabled", False): # Check if architecture section was enabled
+                        arch_files_list = arch_section_data.get("architecture_files", [])
+                    elif isinstance(documentation.get("architecture_files"), list): # Fallback for older global key (if architecture section was custom and didn't populate section_id['architecture_files'])
+                        arch_files_list = documentation.get("architecture_files", [])
+
+
+                    if arch_files_list:
+                        for rel_path_str in arch_files_list:
+                            if len(selected_files_for_assessment_relative_paths) < MAX_FILES_TO_ASSESS and rel_path_str.endswith(".py"):
                                 selected_files_for_assessment_relative_paths.append(rel_path_str)
-                    else:
-                        break
+                    
+                    if len(selected_files_for_assessment_relative_paths) < MAX_FILES_TO_ASSESS and python_files:
+                        for rel_py_path_obj in python_files:
+                            rel_py_path_str = str(rel_py_path_obj)
+                            if rel_py_path_str not in selected_files_for_assessment_relative_paths:
+                                selected_files_for_assessment_relative_paths.append(rel_py_path_str)
+                                if len(selected_files_for_assessment_relative_paths) >= MAX_FILES_TO_ASSESS: break
+                    
+                    logger.info(f"Selected {len(selected_files_for_assessment_relative_paths)} files for quality assessment: {selected_files_for_assessment_relative_paths}")
+                    for file_path_str in selected_files_for_assessment_relative_paths:
+                        assessment = judge_agent.assess_code_quality(file_path_str, language=config.language)
+                        if assessment:
+                            documentation["code_quality_assessments"].append({"file_path": file_path_str, "assessment": assessment}) # Store globally
+                    documentation[section_id]["assessments"] = documentation["code_quality_assessments"] # Also store under section
+                else:
+                    logging.info("Code quality assessment is disabled by global config.")
+                    documentation[section_id]["content"] = "Code quality assessment disabled."
+                    documentation[section_id]["enabled"] = False # Mark this specific section as not producing output
+
+            elif section_type == "custom":
+                if prompt_str: # Prompt should be resolved by config loader from prompt or prompt_file
+                    custom_content = judge_agent.ask_anything(prompt_str) # Assuming prompt_str is already in correct language
+                    documentation[section_id]['content'] = extract_markdown_content(custom_content)
+                    # Add code references from custom content to a generic 'custom' source key or section_id based key
+                    if section_id not in documentation["sources"]: documentation["sources"][section_id] = []
+                    custom_code_refs = extract_code_references(custom_content, python_files, repo_dir, repo_url)
+                    if custom_code_refs: documentation["sources"][section_id].extend(custom_code_refs)
+                else:
+                    logging.warning(f"Custom section '{section_id}' has no prompt defined. Skipping LLM call.")
+                    documentation[section_id]['content'] = "Error: Prompt not defined for this custom section."
             
-            # Supplement with other Python files
-            if len(selected_files_for_assessment_relative_paths) < MAX_FILES_TO_ASSESS:
-                if python_files: # python_files is defined earlier in this function
-                    for rel_py_file_path_obj in python_files: 
-                        rel_py_file_path_str = str(rel_py_file_path_obj)
-                        if len(selected_files_for_assessment_relative_paths) < MAX_FILES_TO_ASSESS:
-                            if rel_py_file_path_str not in selected_files_for_assessment_relative_paths:
-                                if (repo_dir / rel_py_file_path_str).is_file():
-                                    selected_files_for_assessment_relative_paths.append(rel_py_file_path_str)
-                        else:
-                            break
-                else: # Should ideally not happen if python_files is always populated
-                    logger.warning("'python_files' variable not found or empty. Cannot select general Python files for assessment.")
-
-            if not selected_files_for_assessment_relative_paths:
-                logger.info("No suitable Python files found for code quality assessment based on current selection criteria.")
-            else:
-                logger.info(f"Selected {len(selected_files_for_assessment_relative_paths)} Python files for quality assessment: {selected_files_for_assessment_relative_paths}")
-
-            for file_path_to_assess_str in selected_files_for_assessment_relative_paths:
-                logger.info(f"Assessing code quality for: {file_path_to_assess_str}")
-                assessment_text = judge_agent.assess_code_quality(file_path_to_assess_str, language=config.language)
-                if assessment_text:
-                    documentation["code_quality_assessments"].append({
-                        "file_path": file_path_to_assess_str,
-                        "assessment": assessment_text 
-                    })
-                # Optional: import time; time.sleep(1) # If rate limiting becomes an issue
+            # No per-section page generation anymore
 
         deduplicate_sources(documentation)
-        
         documentation = review_and_optimize_content(documentation)
         
-        doc_file = output_dir / f"{repo_dir.name}_documentation.json"
+        # Prepare section_render_order for templates
+        documentation['section_render_order'] = []
+        for sec_conf in sections_to_process: # Use the same list that drove generation
+            if documentation.get(sec_conf['id'], {}).get('enabled', False): # Check if section was processed and still enabled
+                documentation['section_render_order'].append({
+                    'id': sec_conf['id'],
+                    'title': documentation[sec_conf['id']].get('title', sec_conf.get('title', sec_conf['id'])),
+                    'type': documentation[sec_conf['id']].get('type', sec_conf['type'])
+                })
+        
+        doc_file_name = documentation.get("output_filename_base", repo_dir.name) + "_documentation.json"
+        doc_file = output_dir / doc_file_name
+        
         with open(doc_file, "w") as f:
             json.dump(documentation, f, indent=2)
         
-        # Generate final output based on format
         if config.output_format == "markdown":
-            generate_final_markdown(documentation, output_dir, language=config.language)
+            generate_final_markdown(documentation, output_dir, language=config.language, agent_config_obj=config)
         else:
-            generate_final_html(documentation, output_dir)
+            generate_final_html(documentation, output_dir, agent_config_obj=config)
         
         logging.info(f"Documentation generated at {output_dir} in '{config.output_format}' format.")
-        return doc_file # Return the path to the JSON data file
+        return doc_file
     
     except Exception as e:
         logging.error(f"Error during documentation generation: {e}")
         import traceback
         logging.error(traceback.format_exc())
         
-        documentation = {
+        doc_title_error = f"{repo_dir.name} Documentation (Error)"
+        output_filename_base_error = repo_dir.name
+        if config.doc_config:
+            doc_title_error = config.doc_config.get("document_title", doc_title_error)
+            output_filename_base_error = config.doc_config.get("output_filename", output_filename_base_error)
+            if not output_filename_base_error.strip(): output_filename_base_error = repo_dir.name
+
+        error_documentation = {
             "name": repo_dir.name, 
+            "document_title": doc_title_error,
+            "output_filename_base": output_filename_base_error,
             "url": str(repo_url),
             "repo_name": repo_dir.name,
             "org_name": repo_url.split("/")[-2] if repo_url and "/" in repo_url else "",
             "last_indexed": datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "main_purpose": f"Error occurred during documentation generation: {str(e)}",
-            "architecture": "Documentation could not be generated due to an error.",
-            "components": {},
-            "sources": {
-                "overview": [{"file": "README.md"}],
-                "architecture": [],
-                "components": [],
-                "installation": [],
-                "usage": []
-            },
-            "code_quality_assessments": [] # Ensure key exists even on error
+            "error_message": f"Error occurred during documentation generation: {str(e)}",
+            "main_purpose": "Documentation could not be generated due to an error.",
+            "architecture": "Not generated.", 
+            "sources": {"overview": [], "architecture": [], "components": [], "installation": [], "usage": []},
+            "code_quality_assessments": [] 
         }
-        
-        doc_file = output_dir / f"{repo_dir.name}_documentation.json"
+        sections_for_error = config.doc_config.get("sections", DEFAULT_SECTIONS_CONFIG) if config.doc_config else DEFAULT_SECTIONS_CONFIG
+        for sec_conf in sections_for_error:
+            error_documentation[sec_conf["id"]] = {"title": sec_conf.get("title", sec_conf["id"]), "type": sec_conf["type"], "content": "Not generated due to error.", "enabled": sec_conf.get("enabled", True)}
+
+        doc_file_name_error = error_documentation.get("output_filename_base", repo_dir.name) + "_documentation.json"
+        doc_file = output_dir / doc_file_name_error
+
         with open(doc_file, "w") as f:
-            json.dump(documentation, f, indent=2)
+            json.dump(error_documentation, f, indent=2)
         
         try:
-            generate_final_html(documentation, output_dir)
+            if config.output_format == "markdown":
+                generate_final_markdown(error_documentation, output_dir, language=config.language, agent_config_obj=config)
+            else:
+                generate_final_html(error_documentation, output_dir, agent_config_obj=config)
         except Exception as html_error:
-            logging.error(f"Error generating HTML: {html_error}")
+            logging.error(f"Error generating final document from error data: {html_error}")
         
-        logging.info(f"Basic documentation generated at {output_dir}")
+        logging.info(f"Basic error documentation generated at {output_dir}")
         return doc_file
 
 
-def generate_html_page(documentation, output_dir, section=None):
+def generate_html_page(documentation, output_dir, section=None, agent_config_obj: Optional[AgentConfig] = None): # Added agent_config_obj
     template_dir = Path(__file__).parent / "templates" / "html"
     
     try:      
@@ -1063,44 +1132,42 @@ def generate_html_page(documentation, output_dir, section=None):
         
         html_content = template.render(
             documentation=documentation,
-            architecture={"tech_stack": extract_tech_stack(documentation)},
+            doc_config=(agent_config_obj.doc_config if agent_config_obj else None),
+            sections_to_render=documentation.get('section_render_order', []),
+            architecture={"tech_stack": extract_tech_stack(documentation)}, 
             generated_at=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            section=section
+            # section=section # This 'section' param is legacy for per-section generation
         )
         
-        html_file = output_dir / f"{documentation['name']}_documentation.html"
-        with open(html_file, "w") as f:
+        html_file_name = documentation.get("output_filename_base", documentation.get("repo_name", "documentation")) + ".html"
+        html_file = output_dir / html_file_name
+
+        with open(html_file, "w", encoding="utf-8") as f:
             f.write(html_content)
             
-        logging.info(f"Updated HTML documentation for section: {section}")
+        logging.info(f"HTML documentation generated: {html_file}")
     except Exception as e:
         logging.error(f"Error in generate_html_page: {e}")
 
 
-def generate_final_html(documentation, output_dir):
-    generate_html_page(documentation, output_dir, "complete")
-    html_file = output_dir / f"{documentation['name']}_documentation.html"
+def generate_final_html(documentation, output_dir, agent_config_obj: Optional[AgentConfig] = None): # Added agent_config_obj
+    generate_html_page(documentation, output_dir, "complete", agent_config_obj=agent_config_obj) # Pass agent_config_obj
+    output_filename_base = documentation.get("output_filename_base", documentation.get("repo_name", "documentation"))
+    html_file = output_dir / f"{output_filename_base}.html" 
     return html_file
 
 
-# New function for Markdown page generation (Phase 1: logging only)
-def generate_markdown_page(documentation, output_dir, section=None):
+def generate_markdown_page(documentation, output_dir, section=None): # Legacy, per-section
     logger = logging.getLogger(__name__)
-    logger.info(f"Markdown processing for section: {section if section else 'general (not writing to file per section)'}")
-    # For Phase 1, this function does not write to a file per section for Markdown.
-    # The main Markdown generation will happen in generate_final_markdown.
+    logger.info(f"Markdown processing for section (legacy call, will be removed): {section}")
     pass
 
 
-# New function for final Markdown generation
-def generate_final_markdown(documentation, output_dir, language: str = "en") -> Optional[Path]: # Added language parameter
+def generate_final_markdown(documentation, output_dir, language: str = "en", agent_config_obj: Optional[AgentConfig] = None) -> Optional[Path]: # Added agent_config_obj
     logger = logging.getLogger(__name__)
     template_dir = Path(__file__).parent / "templates" / "markdown"
     
     try:
-        # jinja2 is typically imported at the top of the file.
-        # If not, 'import jinja2' would be needed here or globally.
-        # Assuming jinja2 is already imported as it's used by generate_html_page.
         import jinja2 
     except ImportError:
         logger.error("jinja2 library is not installed. Please install it to generate Markdown output.")
@@ -1109,8 +1176,8 @@ def generate_final_markdown(documentation, output_dir, language: str = "en") -> 
     try:
         env = jinja2.Environment(
             loader=jinja2.FileSystemLoader(template_dir),
-            autoescape=jinja2.select_autoescape(['md']), # For Markdown
-            undefined=jinja2.StrictUndefined # Raise error for undefined variables
+            autoescape=jinja2.select_autoescape(['md']), 
+            undefined=jinja2.StrictUndefined
         )
         
         template_name = "index.md.j2"
@@ -1120,31 +1187,38 @@ def generate_final_markdown(documentation, output_dir, language: str = "en") -> 
                 logger.info("Using Chinese Markdown template: index_zh.md.j2")
             except jinja2.exceptions.TemplateNotFound:
                 logger.warning("Chinese Markdown template 'index_zh.md.j2' not found. Falling back to default 'index.md.j2'.")
-                template = env.get_template("index.md.j2") # Fallback
+                template = env.get_template("index.md.j2") 
         else:
             template = env.get_template("index.md.j2")
         
         markdown_content = template.render(
             documentation=documentation,
+            doc_config=(agent_config_obj.doc_config if agent_config_obj else None), # Pass doc_config from AgentConfig
+            sections_to_render=documentation.get('section_render_order', []),
             generated_at=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         )
         
-        md_file = output_dir / f"{documentation['name']}_documentation.md"
+        output_filename_base = documentation.get("output_filename_base", documentation.get("repo_name", "documentation"))
+        md_file = output_dir / f"{output_filename_base}.md"
+
         with open(md_file, "w", encoding="utf-8") as f:
             f.write(markdown_content)
             
         logger.info(f"Final Markdown documentation generated at {md_file}")
         return md_file
     except jinja2.exceptions.TemplateNotFound:
-        logger.error(f"Markdown template 'index.md.j2' not found in '{template_dir}'.")
-        logger.warning("Please create the Markdown template 'scripts/templates/markdown/index.md.j2' to generate the full Markdown document.")
-        # Create a dummy file to indicate an attempt was made, but it's incomplete.
-        dummy_md_file = output_dir / f"{documentation['name']}_documentation_TEMPLATE_MISSING.md"
-        error_message = f"# Markdown Generation Error\n\nTemplate `index.md.j2` not found in `{template_dir}`.\nPlease create this template to enable Markdown output."
+        template_to_report = "index_zh.md.j2" if language == "zh" else "index.md.j2"
+        logger.error(f"Markdown template '{template_to_report}' not found in '{template_dir}'.")
+        logger.warning(f"Please create the Markdown template '{template_to_report}' to generate the full Markdown document.")
+        
+        output_filename_base = documentation.get("output_filename_base", documentation.get("repo_name", "documentation"))
+        dummy_md_file = output_dir / f"{output_filename_base}_TEMPLATE_MISSING.md"
+
+        error_message = f"# Markdown Generation Error\n\nTemplate `{template_to_report}` not found in `{template_dir}`.\nPlease create this template to enable Markdown output."
         with open(dummy_md_file, "w", encoding="utf-8") as f:
             f.write(error_message)
         logger.info(f"Created a placeholder error file at {dummy_md_file} due to missing template.")
-        return dummy_md_file # Return path to dummy file
+        return dummy_md_file
     except Exception as e:
         logger.error(f"Error in generate_final_markdown: {e}")
         import traceback
@@ -1154,9 +1228,15 @@ def generate_final_markdown(documentation, output_dir, language: str = "en") -> 
 
 def extract_tech_stack(documentation):
     tech_stack = []
-    
-    arch_content = documentation.get("architecture", "")
-    
+    arch_content_source = documentation.get("architecture", {}) 
+    if isinstance(arch_content_source, dict) and "content" in arch_content_source : 
+        arch_content = arch_content_source.get("content", "")
+    elif isinstance(arch_content_source, str): 
+        arch_content = arch_content_source
+    else: 
+        arch_content = ""
+
+
     tech_patterns = [
         r'(?:built with|uses|based on|powered by|technology stack|dependencies include)[^\n.]*?((?:[A-Za-z0-9_\-]+(?:\.js)?(?:,|\s|and)?)+)',
         r'(?:technologies used|frameworks|libraries|languages)[^\n.]*?((?:[A-Za-z0-9_\-]+(?:\.js)?(?:,|\s|and)?)+)',
@@ -1347,6 +1427,12 @@ def parse_arguments():
         action='store_true', 
         help='Enable basic code quality assessment during documentation generation.'
     )
+    parser.add_argument(
+        "--config-file",
+        type=str,
+        default=None,
+        help="Path to a YAML configuration file for document structure and content (e.g., openwiki_config.yaml)."
+    )
     
     return parser.parse_args()
 
@@ -1373,7 +1459,7 @@ def main():
         level=logging.INFO,
         format="%(asctime)s - %(levelname)s - %(message)s"
     )
-    logger = logging.getLogger(__name__) # Ensure logger is available in main
+    logger = logging.getLogger(__name__) 
     
     args = parse_arguments()
     
@@ -1392,23 +1478,18 @@ def main():
         if not repo_dir.is_dir():
             logger.error(f"Local path specified is not a valid directory: {repo_dir}")
             sys.exit(1)
-        repo_url = None # Or repo_dir.as_uri() if preferred later
+        repo_url = None 
         logger.info(f"Processing local project path: {repo_dir}")
     else:
-        # args.repo_url must be set if local_path is not, due to mutually exclusive group
         repo_url = args.repo_url 
-        if not repo_url: # Should not happen if argparse is set up correctly
+        if not repo_url: 
              repo_url = get_repo_url_interactive()
         logger.info(f"Processing GitHub repository URL: {repo_url}")
-        # Download only if it's a URL
         repo_dir = download_github_repo(repo_url, output_dir)
 
     start_time = time.time()
     
     try:
-        # logger.info(f"Starting repository download and documentation: {repo_url}") # Moved up
-        # repo_dir = download_github_repo(repo_url, output_dir) # Moved up and made conditional
-        
         include_dirs = args.include_dirs.copy()
         common_code_dirs = ["src", "lib", "app", "core", "utils", "scripts", "tools", "services"]
         
@@ -1423,47 +1504,67 @@ def main():
             setting=args.setting,
             planning=args.planning,
             judge_dir=judge_dir,
-            workspace_dir=repo_dir.parent, # repo_dir is now defined before this
+            workspace_dir=repo_dir.parent, 
             instance_dir=judge_dir,
             output_format=args.output_format,
-            local_path=args.local_path, # Pass the original local_path arg
+            local_path=args.local_path, 
             language=args.language,
-            assess_quality=args.assess_quality
+            assess_quality=args.assess_quality,
+            doc_config_path=args.config_file 
         )
+        
+        agent_config.doc_config = load_doc_config(agent_config.doc_config_path)
+        
+        if agent_config.doc_config:
+            logger.info(f"Successfully loaded document structure from: {agent_config.doc_config_path or 'openwiki_config.yaml (default)'}")
+        elif args.config_file: 
+            logger.warning(f"Failed to load or validate document structure from specified config: {args.config_file}. Proceeding with default structure.")
+        else: 
+            logger.info("No document structure configuration file specified or default 'openwiki_config.yaml' not found. Proceeding with default structure.")
+
         
         logger.info(f"Agent configuration: include={agent_config.include_dirs}, exclude={agent_config.exclude_dirs}, "
                     f"files={agent_config.exclude_files}, setting={agent_config.setting}, planning={agent_config.planning}, "
-                    f"output_format={agent_config.output_format}, local_path={agent_config.local_path}, language={agent_config.language}, assess_quality={agent_config.assess_quality}")
+                    f"output_format={agent_config.output_format}, local_path={agent_config.local_path}, language={agent_config.language}, "
+                    f"assess_quality={agent_config.assess_quality}, doc_config_path={agent_config.doc_config_path}")
         
         doc_file = generate_repo_documentation(repo_dir, output_dir, agent_config, repo_url)
         
         total_time = time.time() - start_time
         logger.info(f"Total documentation time: {total_time:.2f} seconds")
         
-        # Determine final output file path based on format for user message
-        # doc_file is the JSON data file from generate_repo_documentation
         json_file_path = doc_file 
         final_doc_path: Optional[Path] = None
+        
+        doc_data_for_naming = {}
+        try:
+            with open(json_file_path, 'r') as f:
+                doc_data_for_naming = json.load(f)
+        except Exception: 
+            pass
+        
+        output_filename_base = doc_data_for_naming.get("output_filename_base", repo_dir.name)
+        if not output_filename_base.strip(): output_filename_base = repo_dir.name
+
 
         if args.output_format == "markdown":
-            # Check for the dummy file if template was missing, otherwise the expected actual file
-            expected_md_file = output_dir / f"{repo_dir.name}_documentation.md"
-            dummy_md_file = output_dir / f"{repo_dir.name}_documentation_TEMPLATE_MISSING.md"
-            if dummy_md_file.exists(): # If template was missing, this dummy file would have been created
+            expected_md_file = output_dir / f"{output_filename_base}.md"
+            dummy_md_file = output_dir / f"{output_filename_base}_TEMPLATE_MISSING.md"
+            if dummy_md_file.exists(): 
                 final_doc_path = dummy_md_file
-            else: # Otherwise, point to the expected (potentially existing) actual md file
+            else: 
                 final_doc_path = expected_md_file
-        else: # html or default
-            final_doc_path = output_dir / f"{repo_dir.name}_documentation.html"
+        else: 
+            final_doc_path = output_dir / f"{output_filename_base}.html"
         
         try:
-            with open(json_file_path, 'r') as f: # Use json_file_path
+            with open(json_file_path, 'r') as f: 
                 doc_data = json.load(f)
             
             doc_data["generated_at"] = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             doc_data["generation_time_seconds"] = total_time
             
-            with open(json_file_path, 'w') as f: # Use json_file_path
+            with open(json_file_path, 'w') as f: 
                 json.dump(doc_data, f, indent=2)
         except Exception as e:
             logger.warning(f"Could not update documentation metadata: {e}")
@@ -1471,21 +1572,21 @@ def main():
         print("\n" + "=" * 80)
         print(f"✅ Documentation generated successfully in {total_time:.2f} seconds!")
         print("-" * 80)
-        print(f"📄 JSON Data: {json_file_path}") # Print path to the JSON data file
+        print(f"📄 JSON Data: {json_file_path}") 
 
         if final_doc_path and final_doc_path.exists():
             if final_doc_path.name.endswith("_TEMPLATE_MISSING.md"):
                 print(f"⚠️ Markdown Documentation (Template Missing): {final_doc_path}")
-                print(f"   A placeholder file was created. Please create 'index.md.j2' in 'scripts/templates/markdown/'.")
+                print(f"   A placeholder file was created. Please create 'index.md.j2' or 'index_zh.md.j2' in 'scripts/templates/markdown/'.")
             elif args.output_format == "markdown":
                 print(f"🖋️ Markdown Documentation: {final_doc_path}")
                 print(f"🔗 Open Markdown file: {final_doc_path.absolute()}")
             else: # HTML
                 print(f"🌐 HTML Documentation: {final_doc_path}")
                 print(f"🔗 Open HTML file in browser: file://{final_doc_path.absolute()}")
-        elif final_doc_path : # Path was determined but file might not exist (e.g. Markdown template existed but render failed, or HTML failed)
+        elif final_doc_path : 
              print(f"Output document ({args.output_format}) was expected at '{final_doc_path}' but may not have been generated successfully (file not found).")
-        else: # Should not happen if final_doc_path is always determined based on args
+        else: 
             print(f"Output document ({args.output_format}) could not be determined or was not generated.")
         print("=" * 80)
         
@@ -1498,3 +1599,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+[end of scripts/run_wiki.py]

@@ -1,19 +1,28 @@
-{# Main Documentation Template for {{ documentation.repo_name }} #}
+{# Main Documentation Template #}
+{% if documentation.document_title %}
+# {{ documentation.document_title }}
+{% else %}
 # {{ documentation.repo_name }} Documentation
+{% endif %}
 
 Generated at: {{ generated_at }}
 
 ---
+{% for section_data in documentation.section_render_order %}
+{% if documentation[section_data.id] and documentation[section_data.id].enabled %}
+## {{ section_data.title }}
 
-## Overview
+{# Render main content for the section if it exists #}
+{% if documentation[section_data.id].content %}
+{{ documentation[section_data.id].content | safe }}
+{% endif %}
 
-{{ documentation.main_purpose | default("No main purpose specified.") }}
-
+{# Specialized rendering based on section type or ID #}
+{% if section_data.type == 'overview' or section_data.id == 'overview' %}
 {% if documentation.use_cases %}
 ### Use Cases
 {{ documentation.use_cases }}
 {% endif %}
-
 {% if documentation.benchmark_table %}
 ### Benchmarks
 | Benchmark/Task | Description | Agent Types/Configuration |
@@ -22,34 +31,35 @@ Generated at: {{ generated_at }}
 | {{ benchmark.benchmark }} | {{ benchmark.description }} | {{ benchmark.agent_types }} |
 {% endfor %}
 {% endif %}
-
----
-
-## Architecture
-
-{{ documentation.architecture | default("No architecture overview provided.") }}
-
-{% if documentation.architectural_philosophy %}
-### Architectural Philosophy & Design Principles
-{{ documentation.architectural_philosophy }}
 {% endif %}
 
-{% if documentation.numbered_concepts %}
+{% if section_data.type == 'architecture' or section_data.id == 'architecture' %}
+{% if documentation[section_data.id].architectural_philosophy %}
+### Architectural Philosophy & Design Principles
+{{ documentation[section_data.id].architectural_philosophy | safe }}
+{% endif %}
+{% if documentation[section_data.id].numbered_concepts %}
 ### Key Architectural Concepts
-{% for concept in documentation.numbered_concepts %}
+{% for concept in documentation[section_data.id].numbered_concepts %}
 - **{{ concept.title }}**: {{ concept.description }}
 {% endfor %}
 {% endif %}
-
-{% if documentation.architecture_sections %}
+{% if documentation[section_data.id].architecture_sections %}
 ### Architecture Sections
-{% for section in documentation.architecture_sections %}
-#### {{ section.title }}
-{{ section.content }}
+{% for arch_section in documentation[section_data.id].architecture_sections %}
+#### {{ arch_section.title }}
+{{ arch_section.content | safe }}
 {% endfor %}
 {% endif %}
+{% if documentation[section_data.id].architecture_files %}
+### Relevant Architecture Files
+{% for file_path in documentation[section_data.id].architecture_files %}
+- `{{ file_path }}`
+{% endfor %}
+{% endif %}
+{% endif %}
 
-{% if documentation.flow_diagrams %}
+{% if section_data.type == 'diagrams' or section_data.id == 'diagrams' %}
 {% if documentation.flow_diagrams.architecture and documentation.flow_diagrams.architecture.mermaid_code %}
 ### System Architecture Diagram
 ```mermaid
@@ -59,7 +69,6 @@ Generated at: {{ generated_at }}
 *Description: {{ documentation.flow_diagrams.architecture.description }}*
 {% endif %}
 {% endif %}
-
 {% if documentation.flow_diagrams.workflow and documentation.flow_diagrams.workflow.mermaid_code %}
 ### Workflow Diagram
 ```mermaid
@@ -69,7 +78,6 @@ Generated at: {{ generated_at }}
 *Description: {{ documentation.flow_diagrams.workflow.description }}*
 {% endif %}
 {% endif %}
-
 {% if documentation.flow_diagrams.component_relationships and documentation.flow_diagrams.component_relationships.mermaid_code %}
 ### Component Relationship Diagram
 ```mermaid
@@ -81,16 +89,7 @@ Generated at: {{ generated_at }}
 {% endif %}
 {% endif %}
 
-{% if documentation.architecture_files %}
-### Relevant Architecture Files
-{% for file_path in documentation.architecture_files %}
-- `{{ file_path }}`
-{% endfor %}
-{% endif %}
-
----
-
-## Core Components
+{% if section_data.type == 'component_analysis' or section_data.id == 'component_analysis' %}
 {% if documentation.component_table %}
 ### Components Overview
 | Component/Parameter | Description |
@@ -99,7 +98,9 @@ Generated at: {{ generated_at }}
 | `{{ item.name }}`      | {{ item.description | default('N/A') }} |
 {% endfor %}
 {% endif %}
+{% endif %}
 
+{% if section_data.type == 'components' or section_data.id == 'components' %}
 {% if documentation.components %}
 {% for component_name, component_data in documentation.components.items() %}
 ### Component: {{ component_name }}
@@ -109,7 +110,7 @@ Generated at: {{ generated_at }}
 
 {% if component_data.usage %}
 **Usage:** 
-{{ component_data.usage }}
+{{ component_data.usage | safe }}
 {% endif %}
 
 {% if component_data.methods_with_descriptions %}
@@ -141,51 +142,36 @@ Generated at: {{ generated_at }}
 - `{{ source_file_info.file }}`{% if source_file_info.lines %} (Lines: {{ source_file_info.lines }}){% endif %}
 {% endfor %}
 {% endif %}
-
 ---
 {% endfor %}
 {% else %}
-No detailed component information available.
+No detailed component information available for this section.
+{% endif %}
 {% endif %}
 
----
-
-## Usage Guide
-
+{% if section_data.type == 'usage' or section_data.id == 'usage' %}
+{# Main content is already rendered above. Specific fields for usage: #}
 {% if documentation.getting_started %}
 ### Getting Started
-{{ documentation.getting_started }}
+{{ documentation.getting_started | safe }}
 {% endif %}
-
 {% if documentation.basic_example %}
 **Basic Example:**
 ```python
 {{ documentation.basic_example }}
 ```
 {% endif %}
-
-{% if documentation.advanced_usage %}
-### Advanced Usage
-{{ documentation.advanced_usage }}
-{% endif %}
-
 {% if documentation.usage_features %}
 **Key Usage Features:**
 {% for feature in documentation.usage_features %}
 - {{ feature }}
 {% endfor %}
 {% endif %}
-
----
-
-## Installation and Setup
-
-{% if documentation.installation %}
-{{ documentation.installation }}
-{% else %}
-No installation details provided.
+{# documentation.advanced_usage is usually the main content of the 'usage' section, already rendered #}
 {% endif %}
 
+{% if section_data.type == 'installation' or section_data.id == 'installation' %}
+{# Main content (documentation[section_data.id].content which is documentation.installation) is already rendered #}
 {% if documentation.parameters %}
 ### Global Parameters/Configuration
 | Parameter Name | Typical Values / Default | Notes |
@@ -194,31 +180,23 @@ No installation details provided.
 | `{{ param.name }}` | `{{ param.values | default('N/A') }}` | {{ param.notes | default('N/A') }} |
 {% endfor %}
 {% endif %}
+{% endif %}
 
----
-
-{% if documentation.advanced_topics %}
-## Advanced Topics
-{{ documentation.advanced_topics }}
-
-{% if documentation.advanced_topics_sections %}
-{% for section in documentation.advanced_topics_sections %}
-### {{ section.title }}
-{{ section.content }}
+{% if section_data.type == 'advanced_topics' or section_data.id == 'advanced_topics' %}
+{# Main content (documentation[section_data.id].content which is documentation.advanced_topics) is already rendered #}
+{% if documentation[section_data.id].advanced_topics_sections %}
+{% for adv_section in documentation[section_data.id].advanced_topics_sections %}
+### {{ adv_section.title }}
+{{ adv_section.content | safe }}
 {% endfor %}
 {% endif %}
 {% endif %}
 
----
-
-{% if documentation.examples or documentation.code_examples %}
-## Examples & Tutorials
-{% if documentation.examples %}
-{{ documentation.examples }}
-{% endif %}
-
+{% if section_data.type == 'examples' or section_data.id == 'examples' %}
+{# Main content (documentation[section_data.id].content which is documentation.examples) is already rendered #}
 {% if documentation.code_examples %}
 {% for example in documentation.code_examples %}
+{% if example.title and "Example from " + section_data.title in example.description %} {# Crude filter to show only examples for this section if description is set up this way #}
 ### {{ example.title | default('Example') }}
 {% if example.description %}
 {{ example.description }}
@@ -226,23 +204,36 @@ No installation details provided.
 ```python
 {{ example.code }}
 ```
+{% elif not example.description or "Example from" not in example.description %} {# Show general examples not tied to a specific section description #}
+### {{ example.title | default('Example') }}
+{% if example.description %}
+{{ example.description }}
+{% endif %}
+```python
+{{ example.code }}
+```
+{% endif %}
 {% endfor %}
 {% endif %}
 {% endif %}
 
----
-
+{% if section_data.type == 'code_quality' or section_data.id == 'code_quality' %}
 {% if documentation.code_quality_assessments %}
-## Code Quality Assessment
 {% for assessment_item in documentation.code_quality_assessments %}
 ### Assessment for: `{{ assessment_item.file_path }}`
 
 {{ assessment_item.assessment | safe }}
 ---
 {% endfor %}
+{% else %}
+No code quality assessments available.
+{% endif %}
 {% endif %}
 
 ---
+{% endif %}
+{% endfor %}
+
 {% if documentation.sources %}
 ## Source Information
 This documentation was generated based on information from various sources within the repository.

@@ -1,0 +1,76 @@
+# Sample Configuration for OpenWiki (Agent-as-a-Judge)
+# This file demonstrates how to configure the document structure.
+# You can copy this to 'openwiki_config.yaml' and modify it to customize your documentation.
+
+# Optional: Global document settings
+# document_title: "My Project Documentation"  # Overrides default title (repo name)
+# output_filename: "my_project_output"      # Custom output filename (no extension)
+
+sections:
+  - id: "overview"
+    title: "Repository Overview"
+    type: "overview"
+    enabled: true
+    # prompt_override: "Provide a detailed introduction to this project, focusing on its primary goals and intended audience."
+
+  - id: "architecture"
+    title: "Architecture Overview"
+    type: "architecture"
+    enabled: true
+
+  - id: "diagrams"
+    title: "Architectural Diagrams"
+    type: "diagrams"
+    enabled: true
+
+  # component_analysis is implicitly part of the 'components' section type's data gathering
+  # but can be added as a standalone section if a separate LLM call with its specific prompt is desired.
+  # - id: "component_analysis" 
+  #   title: "Key Components Analysis"
+  #   type: "component_analysis"
+  #   enabled: true
+
+  - id: "components"
+    title: "Core Components" # Title for the overall section in the document
+    type: "components" # This type will trigger the detailed loop over components
+    enabled: true
+    # component_names: ["SpecificComponent1", "SpecificComponent2"] # Uncomment to focus on specific components instead of those from component_analysis
+    # prompt_key_detail: "get_component_detail_prompt" # Default, can be overridden for all components here
+    # prompt_override_detail: "Provide an extremely brief summary of {{ component_name }}." # Override for all components
+
+  - id: "installation"
+    title: "Installation Guide"
+    type: "installation"
+    enabled: true
+
+  - id: "usage"
+    title: "Usage Guide"
+    type: "usage"
+    enabled: true
+
+  - id: "advanced_topics"
+    title: "Advanced Topics"
+    type: "advanced_topics"
+    enabled: true
+
+  - id: "examples"
+    title: "Examples & Tutorials"
+    type: "examples"
+    enabled: true
+
+  - id: "code_quality"
+    title: "Code Quality Assessment"
+    type: "code_quality" # This type will trigger the code quality assessment logic
+    enabled: true # Set to false if you don't want this section by default
+    max_files_to_assess: 5 # Default number of files to assess for quality
+
+  # Example of a custom section (disabled by default in sample)
+  # - id: "my_custom_analysis"
+  #   title: "My Custom Project Analysis"
+  #   type: "custom"
+  #   enabled: false
+  #   prompt: |
+  #     Please provide a detailed analysis of how this project integrates with external APIs.
+  #     Discuss data flow, authentication methods, and potential points of failure.
+  #   # Or use a prompt file (path relative to this config file, or CWD):
+  #   # prompt_file: "./prompts/my_custom_prompt.txt"
